@@ -14,15 +14,8 @@ namespace Reports.Controllers
 		[Route("/index")]
 		public IActionResult Index()
 		{
-			var v = ThisAssembly.Git.Sha.ToUpperInvariant().Substring(0, 5);
-
-			if (ThisAssembly.Git.IsDirty)
-			{
-				v += "+";
-			}
-			
-			ViewData["ServerVersion"] = v;
 			ViewData["LocalCommit"] = ThisAssembly.Git.Sha;
+			ViewData["ServerVersion"] = ViewData["LocalCommit"].ToString().Substring(0, 5);
 
 			return View();
 		}

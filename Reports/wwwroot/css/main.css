@@ -187,10 +187,10 @@ footer {
     font-size: 0.75rem;
 }
 
-.reportExpire {
+.reportOwner {
     float: left;
 }
 
-.runningAt {
+.runningOn {
     float: right;
 }
