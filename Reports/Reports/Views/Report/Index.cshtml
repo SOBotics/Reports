@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<meta name="theme-color" content="#1A1A1A">
+	<script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css" />
+	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+	<title>SOBotics Reports</title>
+</head>
+
+<body>
+	<div id="container">
+		<header>
+			<h1>SOBotics Reports</h1>
+			<span class="switchToLight" title="Switch to the light theme"></span>
+			<span class="switchToDark" title="Switch to the dark theme"></span>
+			<h2>$BOT_NAME$ Report $REPORT_ID$$REPORT_TAG$</h2>
+		</header>
+		<div id="main">
+			$REPORT_CONTENT$
+		</div>
+		<footer>
+			<div id="footerContainer">
+				<span class="reportExpire">Reports expire <span style="font-family:QuickSandBold">$REPORT_MAX_LIFE_DAYS$</span> days after creation</span>
+				<span class="runningAt">Running on $SERVER_VERSION$</span>
+			</div>
+		</footer>
+	</div>
+</body>
+</html>
