@@ -5,7 +5,7 @@ Sample request to the create report function (more docs on the way):
 {
     "appName": "Queen",
     "appURL": "http://google.com",
-    "expiresAt": "2018-02-01T21:25:50.5126763Z",
+    "expiresAt": "2019-02-26T21:25:50.5126763Z",
     "records": [
         {
             "fields": [
