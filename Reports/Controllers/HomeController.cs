@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Reports.Controllers
 {
-	public class ReportController : Controller
+	public class HomeController : Controller
 	{
-		[Route("/report/{id:regex(^[[a-zA-Z0-9]]{{6}}$)}")]
-		[Route("/r/{id:regex(^[[a-zA-Z0-9]]{{6}}$)}")]
-		public IActionResult ViewReport(string id)
+		[Route("/")]
+		[Route("/home")]
+		[Route("/index")]
+		public IActionResult Index()
 		{
 			var v = ThisAssembly.Git.Sha.ToUpperInvariant().Substring(0, 5);
 
@@ -18,11 +20,9 @@ namespace Reports.Controllers
 			{
 				v += "+";
 			}
-
+			
 			ViewData["ServerVersion"] = v;
 			ViewData["LocalCommit"] = ThisAssembly.Git.Sha;
-			ViewData["ReportOwner"] = "OpenReports";
-			ViewData["ReportID"] = id;
 
 			return View();
 		}

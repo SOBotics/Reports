@@ -36,8 +36,12 @@ select {
 /* BODY */
 
 .bodyLight {
-    color: #1A1A1A;
-    background-color: #F8F8F8;
+	color: #1A1A1A;
+	background-color: #F8F8F8;
+}
+
+.bodyLight h1 {
+	color: #1A1A1A;
 }
 
 .bodyLight a {
@@ -62,8 +66,12 @@ select {
 }
 
 .bodyDark {
-    color: #F8F8F8;
-    background-color: #1A1A1A;
+	color: #F8F8F8;
+	background-color: #1A1A1A;
+}
+
+.bodyDark h1 {
+	color: #F8F8F8;
 }
 
 #container {
@@ -175,12 +183,11 @@ footer {
 #footerContainer {
     width: 1000px;
     margin: 0 auto;
-    font-family: QuickSandBold, sans-serif;
+    font-family: QuickSand, sans-serif;
     font-size: 0.75rem;
 }
 
 .reportExpire {
-    font-family: QuickSand;
     float: left;
 }
 
