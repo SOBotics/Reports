@@ -42,3 +42,10 @@ Sample request to the create report function (more docs on the way):
     ]
 }
 ```
+
+Sample reponse:
+```json
+{
+    "reportURL": "http://localhost:3833/2mIAkv"
+}
+```
