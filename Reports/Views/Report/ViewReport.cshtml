@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model Reports.Models.Report
+
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -8,7 +10,7 @@
 	<script type="text/javascript" src="/js/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css" />
 	<link rel="stylesheet" type="text/css" href="/css/main.css" />
-	<title>SOBotics Reports - @ViewData["ReportID"]</title>
+	<title>SOBotics Reports - @Model.ID</title>
 </head>
 
 <body>
@@ -23,7 +25,16 @@
 		</div>
 		<footer>
 			<div id="footerContainer">
-				<span class="reportOwner">Data provided by <span style="font-family:QuickSandBold">@ViewData["ReportOwner"]</span></span>
+				<span class="reportOwner">Data provided by <span style="font-family:QuickSandBold">@{
+					if (String.IsNullOrEmpty(@Model.AppURL))
+					{
+						@Model.AppName
+					}
+					else
+					{
+						<a href="@Model.AppURL">@Model.AppName</a>
+					}
+				}</span></span>
 				<span class="runningOn">Running on <a style="font-family:QuickSandBold" href="https://github.com/SOBotics/Reports/commit/@ViewData["LocalCommit"]">@ViewData["ServerVersion"]</a></span>
 			</div>
 		</footer>

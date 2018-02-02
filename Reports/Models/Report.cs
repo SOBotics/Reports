@@ -32,8 +32,11 @@ namespace Reports.Models
 		public ICollection<Field> Fields;
 	}
 
-	public class ReportModel
+	public class Report
 	{
+		[RegularExpression("^[a-zA-Z0-9]{6}")]
+		public string ID;
+
 		[Required, RegularExpression("^[a-zA-Z0-9_ ]{3,25}")]
 		public string AppName;
 
