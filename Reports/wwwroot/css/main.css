@@ -125,7 +125,7 @@ header h1 {
     margin: 0 auto;
 }
 
-.reportHeaderFunctions {
+.reportFunctions {
     display: flex;
     justify-content: space-between;
     padding: 0px 5% 12.5px 5%;

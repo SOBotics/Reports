@@ -8,6 +8,7 @@ namespace Reports.Models
 {
 	public enum Type
 	{
+		Default,
 		Link,
 		Date,
 		Answers

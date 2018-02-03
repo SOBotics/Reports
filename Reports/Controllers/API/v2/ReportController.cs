@@ -35,10 +35,7 @@ namespace Reports.Controllers.API.V2
 				return BadRequest(ModelState);
 			}
 
-			if (String.IsNullOrEmpty(report.ID))
-			{
-				report.ID = GenerateId();
-			}
+			report.ID = GenerateId();
 
 			reportStore.AddReport(report);
 
