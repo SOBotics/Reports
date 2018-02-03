@@ -15,9 +15,27 @@ namespace Reports.Dependencies.ReportStore
 	{
 		private readonly IOptions<ReportStoreOptions> configAccessor;
 		private readonly Dictionary<string, Report> reports;
+		private readonly HashSet<string> allAppNames;
 		private readonly ManualResetEvent deleteLoopMre;
 		private readonly object lck;
+		private int totalReports;
 		private bool dispose;
+
+		public HashSet<string> AppNames
+		{
+			get
+			{
+				return allAppNames;
+			}
+		}
+
+		public int Count
+		{
+			get
+			{
+				return totalReports;
+			}
+		}
 
 		public Report this[string id] => reports[id];
 
@@ -25,10 +43,11 @@ namespace Reports.Dependencies.ReportStore
 
 		public ReportStore(IOptions<ReportStoreOptions> ca)
 		{
-			lck = new object();
 			configAccessor = ca;
 			reports = new Dictionary<string, Report>();
+			allAppNames = new HashSet<string>();
 			deleteLoopMre = new ManualResetEvent(false);
+			lck = new object();
 
 			var reportDir = ca.Value.ReportDirectory;
 			if (!Directory.Exists(reportDir))
@@ -41,6 +60,14 @@ namespace Reports.Dependencies.ReportStore
 			{
 				var json = File.ReadAllText(f);
 				var r = JsonConvert.DeserializeObject<Report>(json);
+
+				if (!allAppNames.Contains(r.AppName))
+				{
+					allAppNames.Add(r.AppName);
+				}
+
+				totalReports++;
+
 				reports.Add(r.ID, r);
 			}
 
@@ -83,6 +110,13 @@ namespace Reports.Dependencies.ReportStore
 
 			lock (lck)
 			{
+				if (!allAppNames.Contains(report.AppName))
+				{
+					allAppNames.Add(report.AppName);
+				}
+
+				totalReports++;
+
 				reports.Add(report.ID, report);
 			}
 
@@ -98,25 +132,32 @@ namespace Reports.Dependencies.ReportStore
 		{
 			while (!dispose)
 			{
-				var reportsToDelete = new HashSet<string>();
+				var reportsToDelete = new HashSet<Report>();
 
 				lock (lck)
 				foreach (var r in reports.Values)
 				{
 					if (DateTime.UtcNow > r.ExpiresAt)
 					{
-						reportsToDelete.Add(r.ID);
+						reportsToDelete.Add(r);
 					}
 				}
 
-				foreach (var id in reportsToDelete)
+				foreach (var r in reportsToDelete)
 				{
 					lock (lck)
 					{
-						reports.Remove(id);
+						if (reports.Values.All(x => x.AppName != r.AppName))
+						{
+							allAppNames.Remove(r.AppName);
+						}
+
+						totalReports--;
+
+						reports.Remove(r.ID);
 					}
 
-					var reportPath = Path.Combine(configAccessor.Value.ReportDirectory, id);
+					var reportPath = Path.Combine(configAccessor.Value.ReportDirectory, r.ID);
 
 					try
 					{
@@ -124,7 +165,7 @@ namespace Reports.Dependencies.ReportStore
 					}
 					catch (Exception ex)
 					{
-						Console.WriteLine($"Failed to delete report {id} ({ex.Message}).");
+						Console.WriteLine($"Failed to delete report {r.ID} ({ex.Message}).");
 					}
 				}
 

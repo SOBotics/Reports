@@ -12,7 +12,6 @@
 	<link rel="stylesheet" type="text/css" href="/css/main.css" />
 	<title>SOBotics Reports - @Model.ID</title>
 </head>
-
 <body>
 	<div id="container">
 		<header>
@@ -27,63 +26,63 @@
 			@foreach (var r in Model.Records)
 			{
 				<div class="report">
-				@foreach (var f in r.Fields)
-				{
-					switch (f.Type)
-					{
-						case Reports.Models.Type.Link:
+					<div class="reportSubContainer">
+						@foreach (var f in r.Fields)
+						{
+							switch (f.Type)
 							{
-								<div class="reportField">
-									<a target="_blank" href="@f.Value">
-										@f.Name
-									</a>
-								</div>
-								break;
+								case Reports.Models.Type.Link:
+									{
+										<div class="reportField">
+											<a target="_blank" href="@f.Value">
+												@f.Name
+											</a>
+										</div>
+										break;
+									}
+								case Reports.Models.Type.Date:
+									{
+										<div class="reportField">
+											<span class="valueName">@f.Name</span>:
+											<span class="timestamp" data-unixtime="@f.Value"></span>
+										</div>
+										break;
+									}
+								case Reports.Models.Type.Answers:
+									{
+										if (f.Value.ToUpperInvariant().StartsWith("A"))
+										{
+											<div class="reportField" style="color:#00AB0B" title="This question has an accepted answer">
+												<span class="valueName">@f.Name</span>: @f.Value.Remove(0, 1)
+											</div>
+										}
+										else
+										{
+											<div class="reportField">
+												<span class="valueName">@f.Name</span>: @f.Value
+											</div>
+										}
+										break;
+									}
+								default:
+									{
+										@if (!string.IsNullOrWhiteSpace(f.Name))
+										{
+											<div class="reportField">
+												<span class="valueName">@f.Name</span>: @f.Value
+											</div>
+										}
+										else
+										{
+											<div class="reportField">
+												@f.Value
+											</div>
+										}
+										break;
+									}
 							}
-						case Reports.Models.Type.Date:
-							{
-								<div class="reportField">
-									<span class="valueName">@f.Name</span>: 
-									<span class="timestamp" data-unixtime="@f.Value"></span>
-								</div>
-								break;
-							}
-						case Reports.Models.Type.Answers:
-							{
-								if (f.Value.ToUpperInvariant().StartsWith("A"))
-								{
-									<div class="reportField" style="color:#00AB0B;" title="This question has an accepted answer">
-										<span class="valueName">@f.Name</span>: @f.Value.Remove(0, 1)
-									</div>
-								}
-								else
-								{
-									<div class="reportField">
-										<span class="valueName">@f.Name</span>: @f.Value
-									</div>
-								}
-
-								break;
-							}
-						default:
-							{
-								
-								@if (!string.IsNullOrWhiteSpace(f.Name))
-								{
-									<div class="reportField">
-										<span class="valueName">@f.Name</span>: @f.Value
-									</div>
-								}
-								else
-								{
-									<div class="reportField">
-										@f.Value
-									</div>
-								}
-								break;
-							}
-					}
-				}
+						}
+					</div>
 				</div>
 			}
 		</div>
