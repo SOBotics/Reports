@@ -121,7 +121,7 @@ header h1 {
 /* MAIN CONTENT */
 
 #main {
-	padding-bottom: 75px; /* Height of the footer + extra padding */
+	padding-bottom: 8em;
 	width: 1000px;
 	margin: 0 auto;
 }

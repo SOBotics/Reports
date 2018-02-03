@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Reports.Dependencies.ReportStore;
 using Reports.Models;
@@ -14,7 +9,7 @@ namespace Reports.Controllers.API.V2
 	[Route("api/v2/[controller]/[action]")]
 	public class ReportController : Controller
 	{
-		// Collision chance using the following fields: 1 in 56,800,235,584 (62^6)
+		// Collision chance using the following ID generation config: 1 in 56,800,235,584 (62^6)
 		private const string validIdChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		private const int idLength = 6;
 
@@ -35,12 +30,24 @@ namespace Reports.Controllers.API.V2
 				return BadRequest(ModelState);
 			}
 
+			if (report.ExpiresAt == default(DateTime))
+			{
+				//TODO: Should probably move this to the config file.
+				report.ExpiresAt = DateTime.UtcNow.AddDays(30);
+			}
+			else if (report.ExpiresAt > DateTime.UtcNow.AddYears(1))
+			{
+				report.ExpiresAt = DateTime.UtcNow.AddYears(1);
+			}
+			else if (report.ExpiresAt < DateTime.UtcNow)
+			{
+				return BadRequest("Report expritartion date cannot be in the past.");
+			}
+
 			report.ID = GenerateId();
 
 			reportStore.AddReport(report);
 
-
-			//TODO: Return report url.
 			return Json(new
 			{
 				ReportURL = $"http://{Request.Host}/r/{report.ID}"
