@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Reports.Config;
 using Reports.Dependencies.ReportStore;
 using Reports.Models;
 
@@ -15,9 +17,11 @@ namespace Reports.Controllers.API.V2
 
 		private readonly RandomNumberGenerator rng;
 		private readonly IReportStore reportStore;
+		private readonly IOptionsSnapshot<HostingOptions> configAccessor;
 
-		public ReportController(IReportStore rs)
+		public ReportController(IOptionsSnapshot<HostingOptions> ca, IReportStore rs)
 		{
+			configAccessor = ca;
 			reportStore = rs;
 			rng = RandomNumberGenerator.Create();
 		}
@@ -53,7 +57,7 @@ namespace Reports.Controllers.API.V2
 
 			return Json(new
 			{
-				ReportURL = $"http://{Request.Host}/r/{report.ID}"
+				ReportURL = $"http://{configAccessor.Value.FQD}/r/{report.ID}"
 			});
 		}
 

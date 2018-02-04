@@ -21,6 +21,7 @@ namespace Reports
 		{
 			services.AddOptions();
 			services.Configure<ReportStoreOptions>(Configuration.GetSection("ReportStore"));
+			services.Configure<HostingOptions>(Configuration.GetSection("Hosting"));
 			services.AddMvc();
 			services.AddSingleton<IReportStore, ReportStore>();
 			//services.AddSingleton(Configuration);
