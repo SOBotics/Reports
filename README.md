@@ -12,14 +12,12 @@ Sample request to the create report function (more docs on the way):
                 {
                     "id": "link",
                     "name": "This is a title, blah blah blah",
-                    "value": "http://google.com",
-                    "type": 0
+                    "value": "http://google.com"
                 },
                 {
                     "id": "score",
                     "name": null,
-                    "value": "-5",
-                    "type": 0
+                    "value": "-5"
                 }
             ]
         },
@@ -34,8 +32,7 @@ Sample request to the create report function (more docs on the way):
                 {
                     "id": "score",
                     "name": null,
-                    "value": "-5",
-                    "type": 0
+                    "value": "-5"
                 }
             ]
         }
