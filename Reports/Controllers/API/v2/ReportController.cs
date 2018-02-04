@@ -30,6 +30,9 @@ namespace Reports.Controllers.API.V2
 				return BadRequest(ModelState);
 			}
 
+			//TODO: Ensure that fields are conistent across all reports per request.
+
+			//TODO: Move validation logic out of the controller.
 			if (report.ExpiresAt == default(DateTime))
 			{
 				//TODO: Should probably move this to the config file.

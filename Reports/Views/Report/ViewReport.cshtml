@@ -26,63 +26,62 @@
 			@foreach (var r in Model.Records)
 			{
 				<div class="report">
-					<div class="reportSubContainer">
-						@foreach (var f in r.Fields)
+					@foreach (var f in r.Fields)
+					{
+						switch (f.Type)
 						{
-							switch (f.Type)
-							{
-								case Reports.Models.Type.Link:
-									{
-										<div class="reportField">
-											<a target="_blank" href="@f.Value">
+							case Reports.Models.Type.Link:
+								{
+									<div id="@f.ID" class="fieldOuter">
+										<span class="fieldInner">
+											<a title="@f.Name" target="_blank" href="@f.Value">
 												@f.Name
 											</a>
-										</div>
-										break;
-									}
-								case Reports.Models.Type.Date:
-									{
-										<div class="reportField">
+										</span>
+									</div>
+									break;
+								}
+							case Reports.Models.Type.Date:
+								{
+									<div id="@f.ID" class="fieldOuter">
+										<span class="fieldInner">
 											<span class="valueName">@f.Name</span>:
 											<span class="timestamp" data-unixtime="@f.Value"></span>
-										</div>
-										break;
-									}
-								case Reports.Models.Type.Answers:
+										</span>
+									</div>
+									break;
+								}
+							case Reports.Models.Type.Answers:
+								{
+									if (f.Value.ToUpperInvariant().StartsWith("A"))
 									{
-										if (f.Value.ToUpperInvariant().StartsWith("A"))
-										{
-											<div class="reportField" style="color:#00AB0B" title="This question has an accepted answer">
+										<div id="@f.ID" class="fieldOuter" style="color:#00AB0B" title="This question has an accepted answer">
+											<span class="fieldInner">
 												<span class="valueName">@f.Name</span>: @f.Value.Remove(0, 1)
-											</div>
-										}
-										else
-										{
-											<div class="reportField">
-												<span class="valueName">@f.Name</span>: @f.Value
-											</div>
-										}
-										break;
+											</span>
+										</div>
 									}
-								default:
+									else
 									{
-										@if (!string.IsNullOrWhiteSpace(f.Name))
-										{
-											<div class="reportField">
+										<div id="@f.ID" class="fieldOuter">
+											<span class="fieldInner">
 												<span class="valueName">@f.Name</span>: @f.Value
-											</div>
-										}
-										else
-										{
-											<div class="reportField">
-												@f.Value
-											</div>
-										}
-										break;
+											</span>
+										</div>
 									}
-							}
+									break;
+								}
+							default:
+								{
+									<div id="@f.ID" class="fieldOuter">
+										<span class="fieldInner">
+											<span class="valueName">@f.Name</span>: @f.Value
+										</span>
+									</div>
+									break;
+								}
 						}
-					</div>
+					}
 				</div>
 			}
 		</div>

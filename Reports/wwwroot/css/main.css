@@ -149,22 +149,41 @@ header h1 {
 	border-image: radial-gradient(#F8F8F8 66%, #1A1A1A 97.5%) 1;
 }
 
-.reportSubContainer {
+.reportSubcontainer {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 15px;
 }
 
-.reportSubContainer:last-child {
+.reportSubcontainer:last-child {
 	margin-bottom: 0;
 }
 
-.reportField {
+.fieldOuter {
 	text-align: left;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
-.reportField:last-child {
+/* May need to move text alignment to outerfield */
+
+.fieldInner {
+	/*margin-left: 2em;*/
+	margin-right: 2em;
+	/*text-align: left;*/
+}
+
+.fieldOuter:last-child > .fieldInner {
+	margin-right: 0;
+}
+
+.fieldOuter:last-child {
 	text-align: right;
+}
+
+.fieldOuter:only-child {
+	text-align: left;
 }
 
 .valueName {

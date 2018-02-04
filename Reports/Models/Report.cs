@@ -14,36 +14,36 @@ namespace Reports.Models
 
 	public class Field
 	{
-		[Required]
-		public string ID;
+		[Required(AllowEmptyStrings = false)]
+		public string ID { get; set; }
 
-		public string Name;
+		[Required(AllowEmptyStrings = false)]
+		public string Name { get; set; }
 
-		[Required]
-		public string Value;
+		[Required(AllowEmptyStrings = false)]
+		public string Value { get; set; }
 
-		public Type Type;
+		public Type Type { get; set; }
 	}
 
 	public class Record
 	{
 		[Required]
-		public ICollection<Field> Fields;
+		public ICollection<Field> Fields { get; set; }
 	}
 
 	public class Report
 	{
-		[RegularExpression("^[a-zA-Z0-9]{6}")]
-		public string ID;
+		public string ID { get; set; }
 
 		[Required, RegularExpression("^[a-zA-Z0-9_ ]{3,25}")]
-		public string AppName;
+		public string AppName { get; set; }
 
-		public string AppURL;
+		public string AppURL { get; set; }
 
-		public DateTime ExpiresAt;
+		public DateTime ExpiresAt { get; set; }
 
 		[Required]
-		public ICollection<Record> Records;
+		public ICollection<Record> Records { get; set; }
 	}
 }
