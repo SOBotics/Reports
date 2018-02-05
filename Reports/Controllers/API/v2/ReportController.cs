@@ -57,7 +57,11 @@ namespace Reports.Controllers.API.V2
 
 			return Json(new
 			{
+#if DEBUG
+				ReportURL = $"http://{Request.Host}/r/{report.ID}"
+#else
 				ReportURL = $"http://{configAccessor.Value.FQD}/r/{report.ID}"
+#endif
 			});
 		}
 

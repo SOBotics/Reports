@@ -5,7 +5,7 @@
 	else {
 		$("body").addClass("bodyDark");
 	}
-	prepareLayout();
+	//fillTables();
 	$(".switchToLight").click(function () {
 		$("body").addClass("bodyLight").removeClass("bodyDark");
 		localStorage["bodyClass"] = "bodyLight";
@@ -60,7 +60,7 @@
 	});
 });
 
-function prepareLayout() {
+function fillTables() {
 	let fieldIdsByWidth = {};
 	let aID = null;
 	$(".fieldOuter").each(function () {

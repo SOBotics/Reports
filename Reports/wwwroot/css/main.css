@@ -25,13 +25,15 @@ a {
 	text-decoration: none;
 }
 
-select {
+/*select {
 	border-width: 0;
 	font-family: QuickSand;
 	font-size: 1rem;
 	color: #F8F8F8;
 	background-color: #1A1A1A;
-}
+}*/
+
+
 
 /* BODY */
 
@@ -77,12 +79,12 @@ select {
 #container {
 	min-height: 100%;
 	position: relative;
-	text-align: center;
 }
 
 /* HEADER */
 
 header {
+	text-align: center;
 	width: 1000px;
 	padding-top: 2%;
 	margin: 0 auto 4% auto;
@@ -94,28 +96,24 @@ header h1 {
 	margin: 0;
 }
 
-.switchToLight {
-	display: inline-block;
-	height: 10px;
-	width: 10px;
-	background-color: #F8F8F8;
-	border-color: #1A1A1A;
-	border-radius: 5px;
-	border-width: 2px;
+header button {
+	padding: 0;
+	height: 15px;
+	width: 15px;
+	border-radius: 10px;
+	border-width: 2.5px;
 	border-style: solid;
 	cursor: pointer;
 }
 
+.switchToLight {
+	background-color: #F8F8F8;
+	border-color: #1A1A1A;
+}
+
 .switchToDark {
-	display: inline-block;
-	height: 10px;
-	width: 10px;
 	background-color: #1A1A1A;
 	border-color: #F8F8F8;
-	border-radius: 5px;
-	border-width: 2px;
-	border-style: solid;
-	cursor: pointer;
 }
 
 /* MAIN CONTENT */
@@ -124,6 +122,10 @@ header h1 {
 	padding-bottom: 8em;
 	width: 1000px;
 	margin: 0 auto;
+}
+
+#main p {
+	text-align: center;
 }
 
 .reportFunctions {
@@ -137,10 +139,6 @@ header h1 {
 	cursor: pointer;
 }
 
-.reportTitleTag {
-	font-family: QuickSandBold;
-}
-
 .report {
 	padding: 25px 5% 0px 5%;
 	margin-bottom: 25px;
@@ -149,47 +147,33 @@ header h1 {
 	border-image: radial-gradient(#F8F8F8 66%, #1A1A1A 97.5%) 1;
 }
 
-.reportSubcontainer {
-	display: flex;
-	justify-content: space-between;
+.report div > span {
+	margin-right: 3em;
+}
+
+.reportLink {
 	margin-bottom: 15px;
-}
-
-.reportSubcontainer:last-child {
-	margin-bottom: 0;
-}
-
-.fieldOuter {
-	text-align: left;
-	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
-/* May need to move text alignment to outerfield */
-
-.fieldInner {
-	/*margin-left: 2em;*/
-	margin-right: 2em;
-	/*text-align: left;*/
+table {
+	width: 100%;
 }
 
-.fieldOuter:last-child > .fieldInner {
-	margin-right: 0;
+td {
+	max-width: 900px;
+	padding-bottom: 15px;
+	padding-right: 2em;
 }
 
-.fieldOuter:last-child {
-	text-align: right;
+td:last-child {
+	padding-right: 0;
 }
-
-.fieldOuter:only-child {
-	text-align: left;
-}
-
 .valueName {
 	font-family: QuickSandBold;
 }
-
 
 /* FOOTER */
 

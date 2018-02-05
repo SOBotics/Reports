@@ -4,20 +4,25 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta charset="utf-8" />
-	<meta name="theme-color" content="#1A1A1A">
 	<script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css" />
 	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#1a1a1a">
+	<meta name="theme-color" content="#1A1A1A">
+	<meta name="msapplication-TileColor" content="#1a1a1a">
 	<title>SOBotics Reports - @Model.ID</title>
 </head>
 <body>
 	<div id="container">
 		<header>
-			<a href="/"><h1>SOBotics Reports</h1></a>
-			<span class="switchToLight" title="Switch to the light theme"></span>
-			<span class="switchToDark" title="Switch to the dark theme"></span>
+			<a href="/"><h1>SOBotics Reports Beta</h1></a>
+			<button class="switchToLight" title="Switch to the light theme"></button>
+			<button class="switchToDark" title="Switch to the dark theme"></button>
 		</header>
 		<div id="main">
 			<div class="reportFunctions">
@@ -32,8 +37,8 @@
 						{
 							case Reports.Models.Type.Link:
 								{
-									<div id="@f.ID" class="fieldOuter">
-										<span class="fieldInner">
+									<div id="@f.ID" class="reportLink">
+										<span>
 											<a title="@f.Name" target="_blank" href="@f.Value">
 												@f.Name
 											</a>
@@ -43,8 +48,8 @@
 								}
 							case Reports.Models.Type.Date:
 								{
-									<div id="@f.ID" class="fieldOuter">
-										<span class="fieldInner">
+									<div id="@f.ID">
+										<span>
 											<span class="valueName">@f.Name</span>:
 											<span class="timestamp" data-unixtime="@f.Value"></span>
 										</span>
@@ -55,16 +60,16 @@
 								{
 									if (f.Value.ToUpperInvariant().StartsWith("A"))
 									{
-										<div id="@f.ID" class="fieldOuter" style="color:#00AB0B" title="This question has an accepted answer">
-											<span class="fieldInner">
+										<div id="@f.ID" style="color:#00AB0B" title="This question has an accepted answer">
+											<span>
 												<span class="valueName">@f.Name</span>: @f.Value.Remove(0, 1)
 											</span>
 										</div>
 									}
 									else
 									{
-										<div id="@f.ID" class="fieldOuter">
-											<span class="fieldInner">
+										<div id="@f.ID" title="This question does not have an accepted answer">
+											<span>
 												<span class="valueName">@f.Name</span>: @f.Value
 											</span>
 										</div>
@@ -73,8 +78,8 @@
 								}
 							default:
 								{
-									<div id="@f.ID" class="fieldOuter">
-										<span class="fieldInner">
+									<div id="@f.ID">
+										<span>
 											<span class="valueName">@f.Name</span>: @f.Value
 										</span>
 									</div>
@@ -82,6 +87,10 @@
 								}
 						}
 					}
+					<table>
+						<tbody>
+						</tbody>
+					</table>
 				</div>
 			}
 		</div>
