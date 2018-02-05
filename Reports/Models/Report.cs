@@ -29,7 +29,7 @@ namespace Reports.Models
 	public class Record
 	{
 		[Required]
-		public ICollection<Field> Fields { get; set; }
+		public Field[] Fields { get; set; }
 	}
 
 	public class Report
@@ -44,6 +44,6 @@ namespace Reports.Models
 		public DateTime ExpiresAt { get; set; }
 
 		[Required]
-		public ICollection<Record> Records { get; set; }
+		public Record[] Records { get; set; }
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -52,6 +53,15 @@ namespace Reports.Controllers.API.V2
 			}
 
 			report.ID = GenerateId();
+			report.AppName = report.AppName.Trim();
+			report.AppURL = report.AppURL.Trim();
+			for (var i = 0; i < report.Records.Length; i++)
+			for (var j = 0; j < report.Records[i].Fields.Length; j++)
+			{
+				var f = report.Records[i].Fields[j];
+				report.Records[i].Fields[j].Name = f.Name.Trim();
+				report.Records[i].Fields[j].Value= f.Value.Trim();
+			}
 
 			reportStore.AddReport(report);
 
