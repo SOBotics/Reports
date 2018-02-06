@@ -52,7 +52,7 @@
 })
 
 $(window).load(function () {
-	//fillTables()
+	fillTables()
 })
 
 function getCellIdsByMaxWidth() {
@@ -87,8 +87,7 @@ function getSmallCells(cells) {
 }
 
 function getLargeCells(cells) {
-	return cells.filter(function (x)
-	{
+	return cells.filter(function (x) {
 		return cells[0].width + x.width >= 900
 	})
 }
@@ -105,6 +104,21 @@ function sortSmallCells(cells) {
 	}
 	return cells
 }
+function getRowCount(smallCells, largeCells) {
+	let rows = largeCells.length
+	let currentRowWidth = 0
+	for (let i = 0; i < smallCells.length; i++) {
+		if (currentRowWidth + smallCells[i].width >= 900) {
+			rows++
+			currentRowWidth = 0
+		}
+		currentRowWidth += smallCells[i].width
+	}
+	if (currentRowWidth > 0) {
+		rows++
+	}
+	return rows
+}
 
 function getTableLayout(smallCells) {
 	let tableLayout = [[]]
@@ -119,24 +133,7 @@ function getTableLayout(smallCells) {
 		currentRowWidth += smallCells[i].width
 		tableLayout[currentRow].push(smallCells[i])
 	}
-	return tableLayout.reverse()
-}
-
-function getRowCount(smallCells, largeCells) {
-	let smallCellsSorted = sortSmallCells(smallCells)
-	let rows = largeCells.length
-	let currentRowWidth = 0
-	for (let i = 0; i < smallCellsSorted.length; i++) {
-		if (currentRowWidth + smallCellsSorted[i].width >= 900) {
-			rows++
-			currentRowWidth = 0
-		}
-		currentRowWidth += smallCellsSorted[i].width
-	}
-	if (currentRowWidth > 0) {
-		rows++
-	}
-	return rows
+	return tableLayout
 }
 
 function getColumnCount(tableLayout) {
@@ -152,12 +149,10 @@ function getColumnCount(tableLayout) {
 function fillTables() {
 	let cellIdsByMaxWidth = getCellIdsByMaxWidth()
 	let largeCells = getLargeCells(cellIdsByMaxWidth)
-	let smallCells = getSmallCells(cellIdsByMaxWidth)
-	console.log(smallCells)
+	let smallCells = sortSmallCells(getSmallCells(cellIdsByMaxWidth))
 	let tableLayout = getTableLayout(smallCells)
 	let rows = getRowCount(smallCells, largeCells)
 	let columns = getColumnCount(tableLayout)
-	console.log(tableLayout)
 	$(".report").each(function () {
 		for (let i = 0; i < rows; i++) {
 			$("tbody", this).append("<tr></tr>")
