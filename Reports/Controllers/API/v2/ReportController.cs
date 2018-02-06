@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -40,7 +39,6 @@ namespace Reports.Controllers.API.V2
 			//TODO: Move validation logic out of the controller.
 			if (report.ExpiresAt == default(DateTime))
 			{
-				//TODO: Should probably move this to the config file.
 				report.ExpiresAt = DateTime.UtcNow.AddDays(30);
 			}
 			else if (report.ExpiresAt > DateTime.UtcNow.AddYears(1))
@@ -55,12 +53,18 @@ namespace Reports.Controllers.API.V2
 			report.ID = GenerateId();
 			report.AppName = report.AppName.Trim();
 			report.AppURL = report.AppURL.Trim();
-			for (var i = 0; i < report.Records.Length; i++)
-			for (var j = 0; j < report.Records[i].Fields.Length; j++)
+			for (var i = 0; i < report.Fields.Length; i++)
+			for (var j = 0; j < report.Fields[i].Length; j++)
 			{
-				var f = report.Records[i].Fields[j];
-				report.Records[i].Fields[j].Name = f.Name.Trim();
-				report.Records[i].Fields[j].Value= f.Value.Trim();
+				var f = report.Fields[i][j];
+				report.Fields[i][j].Name = f.Name.Trim();
+				report.Fields[i][j].Value = f.Value.Trim();
+					if (f.Type == Models.Type.Date)
+					{
+						var dt = DateTime.Parse(f.Value);
+						var epoch = dt.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+						report.Fields[i][j].Value = epoch.ToString();
+					}
 			}
 
 			reportStore.AddReport(report);

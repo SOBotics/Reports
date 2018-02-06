@@ -20,47 +20,39 @@
 		});
 	});
 	$(".timestamp").each(function() {
-		var timestamp = new Date(+$(this)[0].dataset.unixtime * 1000)
+		var timestamp = new Date(+$(this)[0].dataset.unixtime)
 		var secAge = (Date.now() - timestamp) / 1000
 
 		$(this).attr("title", timestamp.toISOString().replace("T", " ").substr(0, 19) + "Z")
 
-		if (secAge < 5) {
-			$(this).text("a few seconds")
-		}
-		else if (secAge < 59) {
-			var secs = Math.round(secAge)
-			$(this).text(secs + " second" + (secs == 1 ? "" : "s"))
-		}
-		else if (secAge < 60 * 59) {
-			var mins = Math.round(secAge / 60)
-			$(this).text(mins + " minute" + (mins == 1 ? "" : "s"))
-		}
-		else if (secAge < 60 * 60 * 23) {
-			var hours = Math.round(secAge / 60 / 60)
-			$(this).text(hours + " hour" + (hours == 1 ? "" : "s"))
-		}
-		else if (secAge < 60 * 60 * 24 * 6) {
-			var days = Math.round(secAge / 60 / 60 / 24)
-			$(this).text(days + " day" + (days == 1 ? "" : "s"))
-		}
-		else if (secAge < 60 * 60 * 24 * 7 * 4) {
-			var weeks = Math.round(secAge / 60 / 60 / 24 / 7)
-			$(this).text(weeks + " week" + (weeks == 1 ? "" : "s"))
-		}
-		else {
+		if (secAge < 0 || secAge > 60 * 60 * 24 * 7 * 4) {
 			var md = timestamp.toDateString().slice(4, 15)
 			var y = "'" + md.split(" ")[2].slice(2, 4)
 			var mdy = md.slice(0, 7) + y
-			$(this).text("on " + mdy)
+			$(this).text(mdy)
 			return
+		} else if (secAge > 60 * 60 * 24 * 6) {
+			var weeks = Math.round(secAge / 60 / 60 / 24 / 7)
+			$(this).text(weeks + " week" + (weeks == 1 ? "" : "s"))
+		} else if (secAge > 60 * 60 * 24) {
+			var days = Math.round(secAge / 60 / 60 / 24)
+			$(this).text(days + " day" + (days == 1 ? "" : "s"))
+		} else if (secAge > 60 * 60) {
+			var hours = Math.round(secAge / 60 / 60)
+			$(this).text(hours + " hour" + (hours == 1 ? "" : "s"))
+		} else if (secAge > 60) {
+			var mins = Math.round(secAge / 60)
+			$(this).text(mins + " minute" + (mins == 1 ? "" : "s"))
+		}
+		else {
+			$(this).text("a few seconds")
 		}
 		$(this).text($(this).text() + " ago")
 	})
 })
 
 $(window).load(function () {
-	fillTables()
+	//fillTables()
 })
 
 function getCellIdsByMaxWidth() {
@@ -113,21 +105,6 @@ function sortSmallCells(cells) {
 	}
 	return cells
 }
-function getRowCount(smallCells, largeCells) {
-	let rows = largeCells.length
-	let currentRowWidth = 0
-	for (let i = 0; i < smallCells.length; i++) {
-		if (currentRowWidth + smallCells[i].width >= 900) {
-			rows++
-			currentRowWidth = 0
-		}
-		currentRowWidth += smallCells[i].width
-	}
-	if (currentRowWidth > 0) {
-		rows++
-	}
-	return rows
-}
 
 function getTableLayout(smallCells) {
 	let tableLayout = [[]]
@@ -142,7 +119,24 @@ function getTableLayout(smallCells) {
 		currentRowWidth += smallCells[i].width
 		tableLayout[currentRow].push(smallCells[i])
 	}
-	return tableLayout
+	return tableLayout.reverse()
+}
+
+function getRowCount(smallCells, largeCells) {
+	let smallCellsSorted = sortSmallCells(smallCells)
+	let rows = largeCells.length
+	let currentRowWidth = 0
+	for (let i = 0; i < smallCellsSorted.length; i++) {
+		if (currentRowWidth + smallCellsSorted[i].width >= 900) {
+			rows++
+			currentRowWidth = 0
+		}
+		currentRowWidth += smallCellsSorted[i].width
+	}
+	if (currentRowWidth > 0) {
+		rows++
+	}
+	return rows
 }
 
 function getColumnCount(tableLayout) {
@@ -158,10 +152,12 @@ function getColumnCount(tableLayout) {
 function fillTables() {
 	let cellIdsByMaxWidth = getCellIdsByMaxWidth()
 	let largeCells = getLargeCells(cellIdsByMaxWidth)
-	let smallCells = sortSmallCells(getSmallCells(cellIdsByMaxWidth))
+	let smallCells = getSmallCells(cellIdsByMaxWidth)
+	console.log(smallCells)
 	let tableLayout = getTableLayout(smallCells)
 	let rows = getRowCount(smallCells, largeCells)
 	let columns = getColumnCount(tableLayout)
+	console.log(tableLayout)
 	$(".report").each(function () {
 		for (let i = 0; i < rows; i++) {
 			$("tbody", this).append("<tr></tr>")

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Reports.Models
@@ -26,12 +25,6 @@ namespace Reports.Models
 		public Type Type { get; set; }
 	}
 
-	public class Record
-	{
-		[Required]
-		public Field[] Fields { get; set; }
-	}
-
 	public class Report
 	{
 		public string ID { get; set; }
@@ -44,6 +37,6 @@ namespace Reports.Models
 		public DateTime ExpiresAt { get; set; }
 
 		[Required]
-		public Record[] Records { get; set; }
+		public Field[][] Fields { get; set; }
 	}
 }

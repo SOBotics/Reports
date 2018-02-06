@@ -28,10 +28,10 @@
 			<div class="reportFunctions">
 				<span id="openAllReports">Open all</span>
 			</div>
-			@foreach (var r in Model.Records)
+			@foreach (var r in Model.Fields)
 			{
 				<div class="report">
-					@foreach (var f in r.Fields)
+					@foreach (var f in r)
 					{
 						switch (f.Type)
 						{
