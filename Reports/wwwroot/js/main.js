@@ -5,7 +5,6 @@
 	else {
 		$("body").addClass("bodyDark")
 	}
-	fillTables()
 	$(".switchToLight").click(function () {
 		$("body").addClass("bodyLight").removeClass("bodyDark")
 		localStorage["bodyClass"] = "bodyLight"
@@ -57,8 +56,12 @@
 			return
 		}
 		$(this).text($(this).text() + " ago")
-	});
-});
+	})
+})
+
+$(window).load(function () {
+	fillTables()
+})
 
 function getCellIdsByMaxWidth() {
 	let cells = []
