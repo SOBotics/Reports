@@ -171,6 +171,10 @@ function fillTables() {
 			for (let cellIndex in rowLayout) {
 				let cellID = rowLayout[cellIndex].id
 				let cell = $("#" + cellID, this)
+				let cellWidth = cellIdsByMaxWidth.filter(function (x) {
+					return x.id === cellID
+				})[0].width
+				cell.width(cellWidth)
 				cell = $("<td></td>").append(cell)
 				$("tbody tr:eq(" + rowIndex + ")", this).append(cell)
 			}
