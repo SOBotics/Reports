@@ -5,6 +5,8 @@
 	else {
 		$("body").addClass("bodyDark")
 	}
+	sortReports()
+	$("#sortBy").change(sortReports)
 	$(".switchToLight").click(function () {
 		$("body").addClass("bodyLight").removeClass("bodyDark")
 		localStorage["bodyClass"] = "bodyLight"
@@ -51,6 +53,25 @@
 	})
 })
 
+function sortReports() {
+	$(".report").sort(function (a, b) {
+		let sortByFieldId = $("#sortBy")[0].value
+		let aEl = $("#" + sortByFieldId + " .fieldData", a)
+		let bEl = $("#" + sortByFieldId + " .fieldData", b)
+		let aData, bData = 0
+		if (aEl[0].dataset.unixtime !== undefined) {
+
+			aData = aEl[0].dataset.unixtime
+			bData = bEl[0].dataset.unixtime
+		} else {
+			aData = aEl.text()
+			bData = bEl.text()
+		}
+		return -(aData - bData)
+	})
+	.appendTo($("#main"))
+}
+
 $(window).load(function () {
 	fillTables()
 })
@@ -60,7 +81,9 @@ function getCellIdsByMaxWidth() {
 	$(".report div:not(.reportLink)").each(function () {
 		let width = $("> :first-child", $(this)).outerWidth(true)
 		let id = $(this)[0].id
-		let c = cells.filter(function (x) { return x.id === id })[0]
+		let c = cells.filter(function (x) {
+			return x.id === id
+		})[0]
 		if (c === undefined) {
 			cells.push({
 				"id": id,
@@ -76,8 +99,9 @@ function getCellIdsByMaxWidth() {
 			})
 		}
 	})
-	cells.sort(function (a, b) { return a.width - b.width })
-	return cells
+	return cells.sort(function (a, b) {
+		return a.width - b.width
+	})
 }
 
 function getSmallCells(cells) {
@@ -87,53 +111,50 @@ function getSmallCells(cells) {
 }
 
 function getLargeCells(cells) {
-	return cells.filter(function (x) {
+	return cells.filter(function (x)
+	{
 		return cells[0].width + x.width >= 900
 	})
 }
 
-function sortSmallCells(cells) {
-	let flip = false
+function getTableLayout(smallCells, rows) {
+	let cells = JSON.parse(JSON.stringify(smallCells))
+	cells.reverse()
+	let tableLayout = []
+	for (let i = 0; i < rows; i++) {
+		tableLayout.push([])
+	}
 	for (let i = 0; i < cells.length; i++) {
-		if (flip && i < cells.length / 2) {
-			let temp = cells[i]
-			cells[i] = cells[cells.length - i]
-			cells[cells.length - i] = temp
+		let rowIndex = i % rows
+		tableLayout[rowIndex].push(cells[i])
+	}
+	return tableLayout
+}
+
+function getRowCount(smallCells, largeCells) {
+	let smallCellsSorted = JSON.parse(JSON.stringify(smallCells))
+	let flip = false
+	for (let i = 0; i < smallCellsSorted.length; i++) {
+		if (flip && i < smallCellsSorted.length / 2) {
+			let temp = smallCellsSorted[i]
+			smallCellsSorted[i] = smallCellsSorted[smallCellsSorted.length - i]
+			smallCellsSorted[smallCellsSorted.length - i] = temp
 		}
 		flip = !flip
 	}
-	return cells
-}
-function getRowCount(smallCells, largeCells) {
 	let rows = largeCells.length
 	let currentRowWidth = 0
-	for (let i = 0; i < smallCells.length; i++) {
-		if (currentRowWidth + smallCells[i].width >= 900) {
+	for (let i = 0; i < smallCellsSorted.length; i++) {
+		if (currentRowWidth + smallCellsSorted[i].width >= 900) {
 			rows++
 			currentRowWidth = 0
 		}
-		currentRowWidth += smallCells[i].width
+		currentRowWidth += smallCellsSorted[i].width
 	}
 	if (currentRowWidth > 0) {
 		rows++
 	}
 	return rows
-}
-
-function getTableLayout(smallCells) {
-	let tableLayout = [[]]
-	let currentRowWidth = 0
-	let currentRow = 0
-	for (let i = 0; i < smallCells.length; i++) {
-		if (currentRowWidth + smallCells[i].width > 900) {
-			tableLayout.push([])
-			currentRowWidth = 0
-			currentRow++
-		}
-		currentRowWidth += smallCells[i].width
-		tableLayout[currentRow].push(smallCells[i])
-	}
-	return tableLayout
 }
 
 function getColumnCount(tableLayout) {
@@ -149,9 +170,9 @@ function getColumnCount(tableLayout) {
 function fillTables() {
 	let cellIdsByMaxWidth = getCellIdsByMaxWidth()
 	let largeCells = getLargeCells(cellIdsByMaxWidth)
-	let smallCells = sortSmallCells(getSmallCells(cellIdsByMaxWidth))
-	let tableLayout = getTableLayout(smallCells)
+	let smallCells = getSmallCells(cellIdsByMaxWidth)
 	let rows = getRowCount(smallCells, largeCells)
+	let tableLayout = getTableLayout(smallCells, rows - largeCells.length)
 	let columns = getColumnCount(tableLayout)
 	$(".report").each(function () {
 		for (let i = 0; i < rows; i++) {
@@ -172,7 +193,6 @@ function fillTables() {
 		}
 		for (let cellIndex in largeCells) {
 			let cellId = largeCells[cellIndex].id
-			console.log(cellId)
 			let cell = $("#" + cellId, this)
 			cell = $("<td colspan=" + columns + "></td>").append(cell)
 			$("tr:empty:eq(0)", this).append(cell)

@@ -25,15 +25,13 @@ a {
 	text-decoration: none;
 }
 
-/*select {
-	border-width: 0;
-	font-family: QuickSand;
-	font-size: 1rem;
+select {
+	border: 0;
+	font: 1em QuickSand;
 	color: #F8F8F8;
 	background-color: #1A1A1A;
-}*/
-
-
+	cursor: pointer;
+}
 
 /* BODY */
 
@@ -147,7 +145,8 @@ header button {
 	border-image: radial-gradient(#F8F8F8 66%, #1A1A1A 97.5%) 1;
 }
 
-.report div > span {
+.report div:not(.reportLink) {
+	display: inline;
 	margin-right: 3em;
 }
 
@@ -170,7 +169,7 @@ td {
 td:last-child {
 	padding-right: 0;
 }
-.valueName {
+.fieldName {
 	font-family: QuickSandBold;
 }
 

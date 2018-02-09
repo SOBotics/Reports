@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Reports.Dependencies.ReportStore;
 
 namespace Reports.Controllers
@@ -23,8 +25,38 @@ namespace Reports.Controllers
 
 			ViewData["LocalCommit"] = ThisAssembly.Git.Sha;
 			ViewData["ServerVersion"] = ViewData["LocalCommit"].ToString().Substring(0, 5);
+			var sortableFields = new Dictionary<string, string>();
 
-			return View(reports[id]);
+			var r = reports[id];
+			foreach (var field in r.Fields[0])
+			{
+				if (r.Fields.All(x =>
+				{
+					var f = x.Single(z => z.ID == field.ID);
+					var value = f.Value;
+					if (f.Type == Models.Type.Answers && value.ToUpperInvariant().StartsWith("A"))
+					{
+						value = value.Remove(0, 1);
+					}
+					return float.TryParse(value, out var res);
+				}))
+				{
+					sortableFields[field.ID] = field.Name;
+				}
+			}
+
+			ViewData["SortableFields"] = sortableFields;
+				//r.Fields[0].Where(x =>
+				//{
+				//	var value = x.Value;
+				//	if (x.Type == Models.Type.Answers && value.ToUpperInvariant().StartsWith("A"))
+				//	{
+				//		value = value.Remove(0, 1);
+				//	}
+				//	return float.TryParse(value, out var res);
+				//}).ToDictionary(x => x.ID, x => x.Name);
+
+			return View(r);
 		}
 	}
 }
