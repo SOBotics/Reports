@@ -24,9 +24,7 @@
 	$(".timestamp").each(function() {
 		var timestamp = new Date(+$(this)[0].dataset.unixtime)
 		var secAge = (Date.now() - timestamp) / 1000
-
 		$(this).attr("title", timestamp.toISOString().replace("T", " ").substr(0, 19) + "Z")
-
 		if (secAge < 0 || secAge > 60 * 60 * 24 * 7 * 4) {
 			var md = timestamp.toDateString().slice(4, 15)
 			var y = "'" + md.split(" ")[2].slice(2, 4)
@@ -53,14 +51,15 @@
 	})
 })
 
+$(window).load(applyReportLayout)
+
 function sortReports() {
 	$(".report").sort(function (a, b) {
 		let sortByFieldId = $("#sortBy")[0].value
-		let aEl = $("#" + sortByFieldId + " .fieldData", a)
-		let bEl = $("#" + sortByFieldId + " .fieldData", b)
+		let aEl = $("." + sortByFieldId + " .fieldData", a)
+		let bEl = $("." + sortByFieldId + " .fieldData", b)
 		let aData, bData = 0
 		if (aEl[0].dataset.unixtime !== undefined) {
-
 			aData = aEl[0].dataset.unixtime
 			bData = bEl[0].dataset.unixtime
 		} else {
@@ -72,130 +71,92 @@ function sortReports() {
 	.appendTo($("#main"))
 }
 
-$(window).load(function () {
-	fillTables()
-})
-
-function getCellIdsByMaxWidth() {
-	let cells = []
-	$(".report div:not(.reportLink)").each(function () {
-		let width = $("> :first-child", $(this)).outerWidth(true)
-		let id = $(this)[0].id
-		let c = cells.filter(function (x) {
+function getFieldIdsByMaxWidth() {
+	let fields = []
+	$(".report div > span").each(function () {
+		let width = $(this).outerWidth(true)
+		let classes = [].slice.apply($(this).parent()[0].classList)
+		let id = classes.filter(function (x) {
+			return x.startsWith("FID")
+		})[0]
+		let f = fields.filter(function (x) {
 			return x.id === id
 		})[0]
-		if (c === undefined) {
-			cells.push({
+		if (f === undefined) {
+			fields.push({
 				"id": id,
-				"width": width
+				"width": width,
 			})
-		} else if (c.width < width) {
-			cells = cells.filter(function (x) {
+		} else if (f.width < width) {
+			fields = fields.filter(function (x) {
 				return x.id !== id
 			})
-			cells.push({
+			fields.push({
 				"id": id,
-				"width": width
+				"width": width,
 			})
 		}
 	})
-	return cells.sort(function (a, b) {
+	return fields.sort(function (a, b) {
 		return a.width - b.width
 	})
 }
 
-function getSmallCells(cells) {
-	return cells.filter(function (x) {
-		return cells[0].width + x.width < 900
+function getSmallFields(fields) {
+	return fields.filter(function (x) {
+		return fields[0].width + x.width < 900
 	})
 }
 
-function getLargeCells(cells) {
-	return cells.filter(function (x)
+function getLargeFields(fields) {
+	return fields.filter(function (x)
 	{
-		return cells[0].width + x.width >= 900
+		return fields[0].width + x.width >= 900
 	})
 }
 
-function getTableLayout(smallCells, rows) {
-	let cells = JSON.parse(JSON.stringify(smallCells))
-	cells.reverse()
-	let tableLayout = []
-	for (let i = 0; i < rows; i++) {
-		tableLayout.push([])
+function getsubCount(smallFields, largeFields) {
+	let currentWidth = 0
+	let subs = largeFields.length
+	for (let i in smallFields) {
+		let f = smallFields[i]
+		if (currentWidth + f.width > 900) {
+			subs++
+			currentWidth = 0
+		}
+		currentWidth += f.width
 	}
-	for (let i = 0; i < cells.length; i++) {
-		let rowIndex = i % rows
-		tableLayout[rowIndex].push(cells[i])
-	}
-	return tableLayout
+	if (currentWidth > 0) subs++
+	return subs
 }
 
-function getRowCount(smallCells, largeCells) {
-	let smallCellsSorted = JSON.parse(JSON.stringify(smallCells))
-	let flip = false
-	for (let i = 0; i < smallCellsSorted.length; i++) {
-		if (flip && i < smallCellsSorted.length / 2) {
-			let temp = smallCellsSorted[i]
-			smallCellsSorted[i] = smallCellsSorted[smallCellsSorted.length - i]
-			smallCellsSorted[smallCellsSorted.length - i] = temp
-		}
-		flip = !flip
-	}
-	let rows = largeCells.length
-	let currentRowWidth = 0
-	for (let i = 0; i < smallCellsSorted.length; i++) {
-		if (currentRowWidth + smallCellsSorted[i].width >= 900) {
-			rows++
-			currentRowWidth = 0
-		}
-		currentRowWidth += smallCellsSorted[i].width
-	}
-	if (currentRowWidth > 0) {
-		rows++
-	}
-	return rows
-}
-
-function getColumnCount(tableLayout) {
-	let columns = 0
-	for (var rowLayoutIndex in tableLayout) {
-		if (tableLayout[rowLayoutIndex].length > columns) {
-			columns = tableLayout[rowLayoutIndex].length
-		}
-	}
-	return columns
-}
-
-function fillTables() {
-	let cellIdsByMaxWidth = getCellIdsByMaxWidth()
-	let largeCells = getLargeCells(cellIdsByMaxWidth)
-	let smallCells = getSmallCells(cellIdsByMaxWidth)
-	let rows = getRowCount(smallCells, largeCells)
-	let tableLayout = getTableLayout(smallCells, rows - largeCells.length)
-	let columns = getColumnCount(tableLayout)
+function applyReportLayout() {
+	let fieldWidths = getFieldIdsByMaxWidth()
+	let largeFields = getLargeFields(fieldWidths)
+	let smallFields = getSmallFields(fieldWidths)
+	let subCount = getsubCount(smallFields, largeFields)
+	$("head").append("<style>.report div > span { margin-right: 0; }</style>")
 	$(".report").each(function () {
-		for (let i = 0; i < rows; i++) {
-			$("tbody", this).append("<tr></tr>")
+		let currentWidth = 0
+		let currentSub = 0
+		for (let i = 0; i < subCount; i++) {
+			$(this).append("<div class=\"reportSubcontainer\" />")
 		}
-		for (let rowIndex in tableLayout) {
-			let rowLayout = tableLayout[rowIndex]
-			for (let cellIndex in rowLayout) {
-				let cellID = rowLayout[cellIndex].id
-				let cell = $("#" + cellID, this)
-				let cellWidth = cellIdsByMaxWidth.filter(function (x) {
-					return x.id === cellID
-				})[0].width
-				cell.width(cellWidth)
-				cell = $("<td></td>").append(cell)
-				$("tbody tr:eq(" + rowIndex + ")", this).append(cell)
+		for (let i in smallFields) {
+			let f = smallFields[i]
+			if (currentWidth + f.width > 900) {
+				currentWidth = 0
+				currentSub++
 			}
+			currentWidth += f.width
+			let fEl = $("." + f.id, this)
+			$("> span", fEl).width(f.width)
+			$(".reportSubcontainer:eq(" + currentSub + ")", this).append(fEl)
 		}
-		for (let cellIndex in largeCells) {
-			let cellId = largeCells[cellIndex].id
-			let cell = $("#" + cellId, this)
-			cell = $("<td colspan=" + columns + "></td>").append(cell)
-			$("tr:empty:eq(0)", this).append(cell)
+		for (let i in largeFields) {
+			let fId = largeFields[i].id
+			let f = $("." + fId, this)
+			$(".reportSubcontainer:empty:eq(0)", this).append(f)
 		}
 	})
 }

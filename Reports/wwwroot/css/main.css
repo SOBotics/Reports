@@ -129,7 +129,7 @@ header button {
 .reportFunctions {
 	display: flex;
 	justify-content: space-between;
-	margin: 0px 5% 1em 5%;
+	margin: 0 5% 1em 5%;
 }
 
 #openAllReports {
@@ -138,16 +138,33 @@ header button {
 }
 
 .report {
-	padding: 25px 5% 0px 5%;
-	margin-bottom: 10px;
+	padding: 25px 5% 25px 5%;
 	border-style: solid;
-	border-width: 1px 0px 0px 0px;
+	border-width: 1px 0 0 0;
 	border-image: radial-gradient(#F8F8F8 66%, #1A1A1A 97.5%) 1;
 }
 
-.report div:not(.reportLink) {
-	display: inline;
+.report div > span {
+	display: inline-block;
 	margin-right: 3em;
+}
+
+.reportSubcontainer {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 15px;
+}
+
+.reportSubcontainer:last-child {
+	margin-bottom: 0;
+}
+
+.reportSubcontainer > div:last-child {
+	text-align: right;
+}
+
+.reportSubcontainer > div:only-child {
+	text-align: left;
 }
 
 .reportLink {

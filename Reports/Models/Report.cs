@@ -13,7 +13,7 @@ namespace Reports.Models
 
 	public class Field
 	{
-		[Required(AllowEmptyStrings = false)]
+		[Required(AllowEmptyStrings = false), RegularExpression("^[a-zA-Z0-9_ ]{1,25}")]
 		public string ID { get; set; }
 
 		[Required(AllowEmptyStrings = false)]
@@ -29,9 +29,10 @@ namespace Reports.Models
 	{
 		public string ID { get; set; }
 
-		[Required, RegularExpression("^[a-zA-Z0-9_ ]{3,25}")]
+		[Required(AllowEmptyStrings = false), RegularExpression("^[a-zA-Z0-9_ ]{3,25}")]
 		public string AppName { get; set; }
 
+		[RegularExpression("^https?://.*")]
 		public string AppURL { get; set; }
 
 		public DateTime ExpiresAt { get; set; }

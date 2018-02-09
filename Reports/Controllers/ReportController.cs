@@ -23,11 +23,9 @@ namespace Reports.Controllers
 				return NotFound();
 			}
 
-			ViewData["LocalCommit"] = ThisAssembly.Git.Sha;
-			ViewData["ServerVersion"] = ViewData["LocalCommit"].ToString().Substring(0, 5);
+			var r = reports[id];
 			var sortableFields = new Dictionary<string, string>();
 
-			var r = reports[id];
 			foreach (var field in r.Fields[0])
 			{
 				if (r.Fields.All(x =>
@@ -46,15 +44,8 @@ namespace Reports.Controllers
 			}
 
 			ViewData["SortableFields"] = sortableFields;
-				//r.Fields[0].Where(x =>
-				//{
-				//	var value = x.Value;
-				//	if (x.Type == Models.Type.Answers && value.ToUpperInvariant().StartsWith("A"))
-				//	{
-				//		value = value.Remove(0, 1);
-				//	}
-				//	return float.TryParse(value, out var res);
-				//}).ToDictionary(x => x.ID, x => x.Name);
+			ViewData["LocalCommit"] = ThisAssembly.Git.Sha;
+			ViewData["ServerVersion"] = ViewData["LocalCommit"].ToString().Substring(0, 5);
 
 			return View(r);
 		}
