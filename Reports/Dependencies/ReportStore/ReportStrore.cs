@@ -147,14 +147,13 @@ namespace Reports.Dependencies.ReportStore
 				{
 					lock (lck)
 					{
+						totalReports--;
+						reports.Remove(r.ID);
+						
 						if (reports.Values.All(x => x.AppName != r.AppName))
 						{
 							allAppNames.Remove(r.AppName);
 						}
-
-						totalReports--;
-
-						reports.Remove(r.ID);
 					}
 
 					var reportPath = Path.Combine(configAccessor.Value.ReportDirectory, r.ID);
