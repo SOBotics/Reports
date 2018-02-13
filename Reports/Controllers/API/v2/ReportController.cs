@@ -34,8 +34,6 @@ namespace Reports.Controllers.API.V2
 				return BadRequest(ModelState);
 			}
 
-			//TODO: Ensure that fields are consistent across all reports per request. And that IDs are unique.
-
 			report.ID = GenerateId();
 			report.AppName = report.AppName.Trim();
 			report.AppURL = report.AppURL.Trim();
