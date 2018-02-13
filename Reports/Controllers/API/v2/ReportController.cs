@@ -34,21 +34,7 @@ namespace Reports.Controllers.API.V2
 				return BadRequest(ModelState);
 			}
 
-			//TODO: Ensure that fields are conistent across all reports per request.
-
-			//TODO: Move validation logic out of the controller.
-			if (report.ExpiresAt == default(DateTime))
-			{
-				report.ExpiresAt = DateTime.UtcNow.AddDays(30);
-			}
-			else if (report.ExpiresAt > DateTime.UtcNow.AddYears(1))
-			{
-				report.ExpiresAt = DateTime.UtcNow.AddYears(1);
-			}
-			else if (report.ExpiresAt < DateTime.UtcNow)
-			{
-				return BadRequest("Report expritartion date cannot be in the past.");
-			}
+			//TODO: Ensure that fields are consistent across all reports per request. And that IDs are unique.
 
 			report.ID = GenerateId();
 			report.AppName = report.AppName.Trim();

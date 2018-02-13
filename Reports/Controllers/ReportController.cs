@@ -7,6 +7,7 @@ namespace Reports.Controllers
 {
 	public class ReportController : Controller
 	{
+		private const string reportIDPattern = "^[[a-zA-Z0-9]]{{6}}$";
 		private readonly IReportStore reports;
 
 		public ReportController(IReportStore reportStore)
@@ -14,8 +15,8 @@ namespace Reports.Controllers
 			reports = reportStore;
 		}
 
-		[Route("/report/{id:regex(^[[a-zA-Z0-9]]{{6}}$)}")]
-		[Route("/r/{id:regex(^[[a-zA-Z0-9]]{{6}}$)}")]
+		[Route("/report/{id:regex(" + reportIDPattern + ")}")]
+		[Route("/r/{id:regex(" + reportIDPattern + ")}")]
 		public IActionResult ViewReport(string id)
 		{
 			if (!reports.Exists(id))
