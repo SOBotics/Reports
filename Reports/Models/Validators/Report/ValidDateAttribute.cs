@@ -18,6 +18,11 @@ namespace Reports.Models.Validators.Report
 				return false;
 			}
 
+			if (d == default(DateTime))
+			{
+				return true;
+			}
+
 			if (d > DateTime.UtcNow.AddYears(1))
 			{
 				errorMessage = "{0} cannot be further than one year away from the current UTC date.";

@@ -33,6 +33,11 @@ namespace Reports.Controllers.API.V2
 			{
 				return BadRequest(ModelState);
 			}
+			
+			if (report.ExpiresAt == default(DateTime))
+			{
+				report.ExpiresAt = DateTime.UtcNow.AddDays(30);
+			}
 
 			report.ID = GenerateId();
 			report.AppName = report.AppName.Trim();
