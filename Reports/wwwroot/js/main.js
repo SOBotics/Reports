@@ -5,22 +5,26 @@
 	else {
 		$("body").addClass("bodyDark")
 	}
+
 	sortReports()
-	$("#sortBy").change(sortReports)
+
 	$(".switchToLight").click(function () {
 		$("body").addClass("bodyLight").removeClass("bodyDark")
 		localStorage["bodyClass"] = "bodyLight"
 	});
+
 	$(".switchToDark").click(function () {
 		$("body").addClass("bodyDark").removeClass("bodyLight")
 		localStorage["bodyClass"] = "bodyDark"
 	});
-	$("#openAllReports").click(function() {
-		$(".fieldInner a").each(function() {
+
+	$("#openAllReports").click(function () {
+		$(".reportLink a").each(function () {
 			var url = $(this).attr("href")
 			window.open(url)
 		});
 	});
+
 	$(".timestamp").each(function() {
 		var timestamp = new Date(+$(this)[0].dataset.unixtime)
 		var secAge = (Date.now() - timestamp) / 1000
@@ -54,6 +58,8 @@
 $(window).load(applyReportLayout)
 
 function sortReports() {
+	if ($("#sortBy")[0] === undefined) return
+	$("#sortBy").change(sortReports)
 	$(".report").sort(function (a, b) {
 		let sortByFieldId = $("#sortBy")[0].value
 		let aEl = $("." + sortByFieldId + " .fieldData", a)

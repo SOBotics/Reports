@@ -26,7 +26,10 @@
 		</header>
 		<div id="main">
 			<div class="reportFunctions">
-				<span id="openAllReports">Open all</span>
+				@if (Model.Fields[0].Any(f => f.Type == Reports.Models.Type.Link))
+				{
+					<span id="openAllReports">Open all</span>
+				}
 				@{
 					var sortableFields = ViewData["SortableFields"] as Dictionary<string, string>;
 					if (sortableFields?.Count > 0)
