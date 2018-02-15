@@ -43,7 +43,7 @@ Example JSON:
         [{
                 "id": "link",
                 "name": "This is some text",
-                "value": "http://google.com",
+                "value": "https://example.com",
                 "type": "link"
             },
             {
@@ -67,7 +67,7 @@ Example JSON:
         [{
                 "id": "link",
                 "name": "This is some more text",
-                "value": "http://google.com",
+                "value": "https://example.com",
                 "type": "link"
             },
             {
@@ -91,7 +91,7 @@ Example JSON:
         [{
                 "id": "link",
                 "name": "Blah blah blah blah blah blah blah blah blah blah",
-                "value": "http://google.com",
+                "value": "https://example.com",
                 "type": "link"
             },
             {
