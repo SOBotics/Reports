@@ -37,7 +37,7 @@ Example JSON:
 ```json
 {
     "appName": "My Awesome App",
-    "appURL": "http://google.com",
+    "appURL": "http://my-awesome.site",
     "expiresAt": "2019-02-02T19:34:00Z",
     "fields": [
         [{
