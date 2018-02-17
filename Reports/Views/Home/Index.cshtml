@@ -1,36 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@{
+	ViewData["Title"] = "Home";
+}
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/main.js"></script>
-	<link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css" />
-	<link rel="stylesheet" type="text/css" href="/css/main.css" />
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#1a1a1a">
-	<meta name="theme-color" content="#1A1A1A">
-	<meta name="msapplication-TileColor" content="#1a1a1a">
-	<title>SOBotics Reports - Home</title>
-</head>
-<body>
-	<div id="container">
-		<header>
-			<a href="/"><h1>SOBotics Reports</h1></a>
-			<button class="switchToLight" title="Switch to the light theme"></button>
-			<button class="switchToDark" title="Switch to the dark theme"></button>
-		</header>
-		<div id="main">
-			<p>What are you doing here? Go check out some of our awesome reports!</p>
-			<p>Currently serving @ViewData["ReportCount"] from @ViewData["AppCount"].</p>
-		</div>
-		<footer>
-			<div id="footerContainer">
-				<span class="runningOn">Running on <a style="font-family:QuickSandBold" href="https://github.com/SOBotics/Reports/commit/@ViewData["LocalCommit"]">@ViewData["ServerVersion"]</a></span>
-			</div>
-		</footer>
-	</div>
-</body>
-</html>
+<p>What are you doing here? Go check out some of our awesome reports!</p>
+<p>Currently serving @ViewData["ReportCount"] from @ViewData["AppCount"].</p>

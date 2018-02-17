@@ -137,6 +137,7 @@ function getsubCount(smallFields, largeFields) {
 }
 
 function applyReportLayout() {
+	if (!window.location.pathname.startsWith("/r")) return
 	let fieldWidths = getFieldIdsByMaxWidth()
 	let largeFields = getLargeFields(fieldWidths)
 	let smallFields = getSmallFields(fieldWidths)

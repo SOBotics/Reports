@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using Reports.Config;
 using Reports.Models;
 
-namespace Reports.Dependencies.ReportStore
+namespace Reports.Services.ReportStore
 {
 	public class ReportStore : IReportStore, IDisposable
 	{

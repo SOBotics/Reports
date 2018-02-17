@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Reports.Config;
-using Reports.Dependencies.ReportStore;
+using Reports.Services.ReportStore;
 
 namespace Reports
 {
@@ -23,13 +23,14 @@ namespace Reports
 			services.Configure<ReportStoreOptions>(Configuration.GetSection("ReportStore"));
 			services.Configure<HostingOptions>(Configuration.GetSection("Hosting"));
 			services.AddMvc();
+			services.AddResponseCompression();
 			services.AddSingleton<IReportStore, ReportStore>();
-			//services.AddSingleton(Configuration);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{
+			app.UseResponseCompression();
 			app.UseStaticFiles();
 			app.UseMvc();
 		}

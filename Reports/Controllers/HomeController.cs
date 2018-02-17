@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Reports.Dependencies.ReportStore;
+using Reports.Services.ReportStore;
 
 namespace Reports.Controllers
 {
@@ -24,6 +24,8 @@ namespace Reports.Controllers
 			ViewData["ServerVersion"] = ViewData["LocalCommit"].ToString().Substring(0, 5);
 			ViewData["ReportCount"] = reportCount;
 			ViewData["AppCount"] = appCount;
+
+			Response.Headers["ETag"] = "";
 
 			return View();
 		}

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Reports.Dependencies.ReportStore;
+using Reports.Services.ReportStore;
 
 namespace Reports.Controllers
 {

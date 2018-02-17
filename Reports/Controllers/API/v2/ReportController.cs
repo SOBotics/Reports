@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Reports.Config;
-using Reports.Dependencies.ReportStore;
+using Reports.Services.ReportStore;
 using Reports.Models;
 
 namespace Reports.Controllers.API.V2

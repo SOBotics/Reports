@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Reports.Models;
 
-namespace Reports.Dependencies.ReportStore
+namespace Reports.Services.ReportStore
 {
 	public interface IReportStore
 	{

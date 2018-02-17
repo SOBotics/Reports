@@ -1,133 +1,94 @@
 ﻿@model Reports.Models.Report
+@{
+	ViewData["Title"] = Model.ID;
+	ViewData["AppName"] = Model.AppName;
+	ViewData["AppURL"] = Model.AppURL;
+}
 
-<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/main.js"></script>
-	<link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css" />
-	<link rel="stylesheet" type="text/css" href="/css/main.css" />
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#1a1a1a">
-	<meta name="theme-color" content="#1A1A1A">
-	<meta name="msapplication-TileColor" content="#1a1a1a">
-	<title>SOBotics Reports - @Model.ID</title>
-</head>
-<body>
-	<div id="container">
-		<header>
-			<a href="/"><h1>SOBotics Reports</h1></a>
-			<button class="switchToLight" title="Switch to the light theme"></button>
-			<button class="switchToDark" title="Switch to the dark theme"></button>
-		</header>
-		<div id="main">
-			<div class="reportFunctions">
-				@if (Model.Fields[0].Any(f => f.Type == Reports.Models.Type.Link))
-				{
-					<span id="openAllReports">Open all</span>
-				}
-				@{
-					var sortableFields = ViewData["SortableFields"] as Dictionary<string, string>;
-					if (sortableFields?.Count > 0)
-					{
-						<span>
-							Sort by
-							<select id="sortBy">
-								@foreach (var field in sortableFields)
-								{
-									<option value="@field.Key">@field.Value</option>
-								}
-							</select>
-						</span>
-					}
-				}
-			</div>
-			@foreach (var r in Model.Fields)
+@if (Model.Fields.Length > 1)
+{
+	<div class="reportFunctions">
+		@if (Model.Fields[0].Any(f => f.Type == Reports.Models.Type.Link))
+		{
+			<span id="openAllReports">Open all</span>
+		}
+		@{ 
+			var sortableFields = ViewData["SortableFields"] as Dictionary<string, string>;
+			if (sortableFields?.Count > 0)
 			{
-				<div class="report">
-					@foreach (var f in r)
-					{
-						switch (f.Type)
+				<span>
+					Sort by
+					<select id="sortBy">
+						@foreach (var field in sortableFields)
 						{
-							case Reports.Models.Type.Link:
-								{
-									<div class="@f.ID reportLink">
-										<a title="@f.Name" target="_blank" href="@f.Value">
-											@f.Name
-										</a>
-									</div>
-									break;
-								}
-							case Reports.Models.Type.Date:
-								{
-									<div class="@f.ID">
-										<span>
-											<span class="fieldName">@f.Name</span>:
-											<span class="timestamp fieldData" data-unixtime="@f.Value">@f.Value</span>
-										</span>
-									</div>
-									break;
-								}
-							case Reports.Models.Type.Answers:
-								{
-									if (f.Value.ToUpperInvariant().StartsWith("A"))
-									{
-										<div class="@f.ID" style="color:#00AB0B" title="This question has an accepted answer">
-											<span>
-												<span class="fieldName">@f.Name</span>: 
-												<span class="fieldData">@f.Value.Remove(0, 1)</span>
-											</span>
-										</div>
-									}
-									else
-									{
-										<div class="@f.ID" title="This question does not have an accepted answer">
-											<span>
-												<span class="fieldName">@f.Name</span>: 
-												<span class="fieldData">@f.Value</span>
-											</span>
-										</div>
-									}
-									break;
-								}
-							default:
-								{
-									<div class="@f.ID">
-										<span>
-											<span class="fieldName">@f.Name</span>: 
-											<span class="fieldData">@f.Value</span>
-										</span>
-									</div>
-									break;
-								}
+							<option value="@field.Key">@field.Value</option>
 						}
-					}
-				</div>
+					</select>
+				</span>
 			}
-		</div>
-		<footer>
-			<div id="footerContainer">
-				<span class="reportOwner">
-					Data provided by <span style="font-family:QuickSandBold">
-					@{
-						if (String.IsNullOrEmpty(@Model.AppURL))
+		}
+	</div>
+}
+
+@foreach (var r in Model.Fields)
+{
+	<div class="report">
+		@foreach (var f in r)
+		{
+			switch (f.Type)
+			{
+				case Reports.Models.Type.Link:
+					{
+						<div class="@f.ID reportLink">
+							<a title="@f.Name" target="_blank" href="@f.Value">
+								@f.Name
+							</a>
+						</div>
+						break;
+					}
+				case Reports.Models.Type.Date:
+					{
+						<div class="@f.ID">
+							<span>
+								<span class="fieldName">@f.Name</span>:
+								<span class="timestamp fieldData" data-unixtime="@f.Value">@f.Value</span>
+							</span>
+						</div>
+						break;
+					}
+				case Reports.Models.Type.Answers:
+					{
+						if (f.Value.ToUpperInvariant().StartsWith("A"))
 						{
-							@Model.AppName
+							<div class="@f.ID" style="color:#00AB0B" title="This question has an accepted answer">
+								<span>
+									<span class="fieldName">@f.Name</span>: 
+									<span class="fieldData">@f.Value.Remove(0, 1)</span>
+								</span>
+							</div>
 						}
 						else
 						{
-							<a href="@Model.AppURL">@Model.AppName</a>
+							<div class="@f.ID" title="This question does not have an accepted answer">
+								<span>
+									<span class="fieldName">@f.Name</span>: 
+									<span class="fieldData">@f.Value</span>
+								</span>
+							</div>
 						}
+						break;
 					}
-					</span>
-				</span>
-				<span class="runningOn">Running on <a style="font-family:QuickSandBold" href="https://github.com/SOBotics/Reports/commit/@ViewData["LocalCommit"]">@ViewData["ServerVersion"]</a></span>
-			</div>
-		</footer>
+				default:
+					{
+						<div class="@f.ID">
+							<span>
+								<span class="fieldName">@f.Name</span>: 
+								<span class="fieldData">@f.Value</span>
+							</span>
+						</div>
+						break;
+					}
+			}
+		}
 	</div>
-</body>
-</html>
+}
