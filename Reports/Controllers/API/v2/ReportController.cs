@@ -1,29 +1,25 @@
 ﻿using System;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Reports.Config;
-using Reports.Services.ReportStore;
 using Reports.Models;
+using Reports.Services.Reports.Accessor;
+using Reports.Services.Reports.IdGenerator;
 
 namespace Reports.Controllers.API.V2
 {
 	[Route("api/v2/[controller]/[action]")]
 	public class ReportController : Controller
 	{
-		// Collision chance using the following ID generation config: 1 in 56,800,235,584 (62^6)
-		private const string validIdChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		private const int idLength = 6;
-
-		private readonly RandomNumberGenerator rng;
-		private readonly IReportStore reportStore;
+		private readonly IReportAccessor reportStore;
+		private readonly IIdGenerator idGenerator;
 		private readonly IOptionsSnapshot<HostingOptions> configAccessor;
 
-		public ReportController(IOptionsSnapshot<HostingOptions> ca, IReportStore rs)
+		public ReportController(IOptionsSnapshot<HostingOptions> ca, IReportAccessor rs, IIdGenerator idGen)
 		{
 			configAccessor = ca;
 			reportStore = rs;
-			rng = RandomNumberGenerator.Create();
+			idGenerator = idGen;
 		}
 
 		[HttpPost]
@@ -39,7 +35,7 @@ namespace Reports.Controllers.API.V2
 				report.ExpiresAt = DateTime.UtcNow.AddDays(30);
 			}
 
-			report.ID = GenerateId();
+			report.ID = idGenerator.GetNewId();
 			report.AppName = report.AppName.Trim();
 			report.AppURL = report.AppURL.Trim();
 
@@ -71,25 +67,6 @@ namespace Reports.Controllers.API.V2
 				ReportURL = $"http://{Request.Host}/r/{report.ID}"
 #endif
 			});
-		}
-
-		private string GenerateId()
-		{
-			var id = "";
-
-			for (var i = 0; i < idLength; i++)
-			{
-				var b = new byte[4];
-
-				rng.GetBytes(b);
-
-				var bInt = Math.Abs(BitConverter.ToInt32(b, 0));
-				var charIndex = bInt % validIdChars.Length;
-
-				id += validIdChars[charIndex];
-			}
-
-			return id;
 		}
 	}
 }

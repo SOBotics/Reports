@@ -4,14 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LZ4;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Reports.Config;
 using Reports.Models;
+using ZeroFormatter;
 
-namespace Reports.Services.ReportStore
+namespace Reports.Services.Reports.Accessor
 {
-	public class ReportStore : IReportStore, IDisposable
+	public class ReportAccessor : IReportAccessor, IDisposable
 	{
 		private readonly IOptions<ReportStoreOptions> configAccessor;
 		private readonly Dictionary<string, Report> reports;
@@ -41,7 +42,7 @@ namespace Reports.Services.ReportStore
 
 
 
-		public ReportStore(IOptions<ReportStoreOptions> ca)
+		public ReportAccessor(IOptions<ReportStoreOptions> ca)
 		{
 			configAccessor = ca;
 			reports = new Dictionary<string, Report>();
@@ -58,8 +59,9 @@ namespace Reports.Services.ReportStore
 			var files = Directory.EnumerateFiles(reportDir);
 			foreach (var f in files)
 			{
-				var json = File.ReadAllText(f);
-				var r = JsonConvert.DeserializeObject<Report>(json);
+				var bytes = File.ReadAllBytes(f);
+				bytes = LZ4.LZ4Codec.Unwrap(bytes);
+				var r = ZeroFormatterSerializer.Deserialize<Report>(bytes);
 
 				if (!allAppNames.Contains(r.AppName))
 				{
@@ -74,7 +76,7 @@ namespace Reports.Services.ReportStore
 			Task.Run(() => DeleteReportsLoop());
 		}
 
-		~ReportStore() => Dispose();
+		~ReportAccessor() => Dispose();
 
 		public void Dispose()
 		{
@@ -120,10 +122,14 @@ namespace Reports.Services.ReportStore
 				reports.Add(report.ID, report);
 			}
 
-			var json = JsonConvert.SerializeObject(report);
-			var reportPath = Path.Combine(configAccessor.Value.ReportDirectory, report.ID);
+			Task.Run(() =>
+			{
+				var bytes = ZeroFormatterSerializer.Serialize(report);
+				bytes = LZ4Codec.Wrap(bytes, 0, bytes.Length);
+				var reportPath = Path.Combine(configAccessor.Value.ReportDirectory, report.ID);
 
-			File.WriteAllText(reportPath, json);
+				File.WriteAllBytes(reportPath, bytes);
+			});
 		}
 
 

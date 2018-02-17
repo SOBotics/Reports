@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Reports.Models.Validators.Report;
+using ZeroFormatter;
 
 namespace Reports.Models
 {
@@ -12,39 +13,50 @@ namespace Reports.Models
 		Answers
 	}
 
+	[ZeroFormattable]
 	public class Field
 	{
+		[Index(0)]
 		[Required(AllowEmptyStrings = false)]
 		[RegularExpression("^[a-zA-Z0-9_\\- ]{1,25}")]
-		public string ID { get; set; }
+		public virtual string ID { get; set; }
 
+		[Index(1)]
 		[Required(AllowEmptyStrings = false)]
-		public string Name { get; set; }
+		public virtual string Name { get; set; }
 
+		[Index(2)]
 		[Required(AllowEmptyStrings = false)]
-		public string Value { get; set; }
+		public virtual string Value { get; set; }
 
-		public Type Type { get; set; }
+		[Index(3)]
+		public virtual Type Type { get; set; }
 	}
 
+	[ZeroFormattable]
 	public class Report
 	{
 		private const string appNamePattenErrorMessage = "'AppName' must be between 3 to 25 characters long (inclusive), and can only contain: alphanumerical characters, underscores, dashes (-), and spaces.";
 
-		public string ID { get; set; }
+		[Index(0)]
+		public virtual string ID { get; set; }
 
+		[Index(1)]
 		[Required(AllowEmptyStrings = false)]
 		[RegularExpression("^[a-zA-Z0-9_\\- ]{3,25}", ErrorMessage = appNamePattenErrorMessage)]
-		public string AppName { get; set; }
+		public virtual string AppName { get; set; }
 
+		[Index(2)]
 		[RegularExpression("^https?://.*")]
-		public string AppURL { get; set; }
+		public virtual string AppURL { get; set; }
 
+		[Index(3)]
 		[ValidDate]
-		public DateTime ExpiresAt { get; set; }
+		public virtual DateTime ExpiresAt { get; set; }
 
+		[Index(4)]
 		[Required]
 		[UniqueID]
-		public Field[][] Fields { get; set; }
+		public virtual Field[][] Fields { get; set; }
 	}
 }

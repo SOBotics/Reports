@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+	var sha = ViewData["Sha"].ToString();
+	var commitUrl = $"https://github.com/SOBotics/Reports/commit/{sha}";
+	var serverVersion = sha.ToString().Substring(0, 5);
+}
+
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -40,7 +46,7 @@
 							</span>
 						</span>
 					}
-					<span class="runningOn">Running on <a style="font-family:QuickSandBold" href="https://github.com/SOBotics/Reports/commit/@ViewData["LocalCommit"]">@ViewData["ServerVersion"]</a></span>
+					<span class="runningOn">Running on <a style="font-family:QuickSandBold" href="@commitUrl">@serverVersion</a></span>
 				</div>
 			</footer>
 		</div>

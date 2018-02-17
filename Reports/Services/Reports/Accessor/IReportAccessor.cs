@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Reports.Models;
 
-namespace Reports.Services.ReportStore
+namespace Reports.Services.Reports.Accessor
 {
-	public interface IReportStore
+	public interface IReportAccessor
 	{
 		HashSet<string> AppNames { get; }
 

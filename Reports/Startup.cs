@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Reports.Config;
-using Reports.Services.ReportStore;
+using Reports.Services.Reports.Accessor;
+using Reports.Services.Reports.Cache;
+using Reports.Services.Reports.IdGenerator;
 
 namespace Reports
 {
@@ -24,7 +26,9 @@ namespace Reports
 			services.Configure<HostingOptions>(Configuration.GetSection("Hosting"));
 			services.AddMvc();
 			services.AddResponseCompression();
-			services.AddSingleton<IReportStore, ReportStore>();
+			services.AddSingleton<IReportAccessor, ReportAccessor>();
+			services.AddSingleton<IReportCache, ReportCache>();
+			services.AddTransient<IIdGenerator, IdGenerator>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

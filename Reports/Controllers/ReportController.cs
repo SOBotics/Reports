@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Reports.Services.ReportStore;
+using Reports.Services.Reports.Accessor;
 
 namespace Reports.Controllers
 {
 	public class ReportController : Controller
 	{
 		private const string reportIDPattern = "^[[a-zA-Z0-9]]{{6}}$";
-		private readonly IReportStore reports;
+		private readonly IReportAccessor reports;
 
-		public ReportController(IReportStore reportStore)
+		public ReportController(IReportAccessor reportStore)
 		{
 			reports = reportStore;
 		}
@@ -44,9 +44,8 @@ namespace Reports.Controllers
 				}
 			}
 
+			ViewData["Sha"] = ThisAssembly.Git.Sha;
 			ViewData["SortableFields"] = sortableFields;
-			ViewData["LocalCommit"] = ThisAssembly.Git.Sha;
-			ViewData["ServerVersion"] = ViewData["LocalCommit"].ToString().Substring(0, 5);
 
 			return View(r);
 		}

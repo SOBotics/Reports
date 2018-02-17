@@ -1,29 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Reports.Services.ReportStore;
+using Reports.Services.Reports.Accessor;
 
 namespace Reports.Controllers
 {
+	[Route("/[action]")]
 	public class HomeController : Controller
 	{
-		private readonly IReportStore reports;
+		private readonly IReportAccessor reports;
 
-		public HomeController(IReportStore reportStore)
+		public HomeController(IReportAccessor reportStore)
 		{
 			reports = reportStore;
 		}
 
 		[Route("/")]
 		[Route("/home")]
-		[Route("/index")]
 		public IActionResult Index()
 		{
-			var reportCount = $"{reports.Count.ToString("N0")} report{(reports.Count == 1 ? "" : "s")}";
-			var appCount = $"{reports.AppNames.Count} app{(reports.AppNames.Count == 1 ? "" : "s")}";
+			ViewData["Sha"] = ThisAssembly.Git.Sha;
 
-			ViewData["LocalCommit"] = ThisAssembly.Git.Sha;
-			ViewData["ServerVersion"] = ViewData["LocalCommit"].ToString().Substring(0, 5);
-			ViewData["ReportCount"] = reportCount;
-			ViewData["AppCount"] = appCount;
+			return View();
+		}
+
+		public IActionResult Stats()
+		{
+			ViewData["Sha"] = ThisAssembly.Git.Sha;
 
 			return View();
 		}
