@@ -25,8 +25,6 @@ namespace Reports.Controllers
 			ViewData["ReportCount"] = reportCount;
 			ViewData["AppCount"] = appCount;
 
-			Response.Headers["ETag"] = "";
-
 			return View();
 		}
 	}
