@@ -3,7 +3,6 @@
 		"FQD": "reports.sobotics.org"
 	},
 	"DataStore": {
-		"Reports": ".\\reports",
-		"Stats": ".\\stats"
+		"Reports": ".\\reports"
 	}
 }
