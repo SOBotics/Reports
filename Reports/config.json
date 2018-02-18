@@ -2,7 +2,8 @@
 	"Hosting": {
 		"FQD": "reports.sobotics.org"
 	},
-	"ReportStore": {
-		"ReportDirectory": ".\\reports"
+	"DataStore": {
+		"Reports": ".\\reports",
+		"Stats": ".\\stats"
 	}
 }

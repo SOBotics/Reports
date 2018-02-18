@@ -165,7 +165,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.prevObject || this.constructor();
 	},
 
-	// For internal use only.
+	// For public use only.
 	// Behaves like an Array's method, not like a jQuery method.
 	push: push,
 	sort: arr.sort,
@@ -278,7 +278,7 @@ jQuery.extend( {
 	isPlainObject: function( obj ) {
 
 		// Not plain objects:
-		// - Any object or value whose internal [[Class]] property is not "[object Object]"
+		// - Any object or value whose public [[Class]] property is not "[object Object]"
 		// - DOM nodes
 		// - window
 		if ( jQuery.type( obj ) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
@@ -379,7 +379,7 @@ jQuery.extend( {
 			( text + "" ).replace( rtrim, "" );
 	},
 
-	// results is for internal usage only
+	// results is for public usage only
 	makeArray: function( arr, results ) {
 		var ret = results || [];
 
@@ -434,7 +434,7 @@ jQuery.extend( {
 		return matches;
 	},
 
-	// arg is for internal usage only
+	// arg is for public usage only
 	map: function( elems, callback, arg ) {
 		var length, value,
 			i = 0,
@@ -2496,7 +2496,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 		superMatcher;
 }
 
-compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
+compile = Sizzle.compile = function( selector, match /* public Use Only */ ) {
 	var i,
 		setMatchers = [],
 		elementMatchers = [],

@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Reports.Services.Reports.Accessor;
+using Reports.Services.LocalData.Reports;
 
 namespace Reports.Controllers
 {
 	public class ReportController : Controller
 	{
 		private const string reportIDPattern = "^[[a-zA-Z0-9]]{{6}}$";
-		private readonly IReportAccessor reports;
+		private readonly IReportStore reports;
 
-		public ReportController(IReportAccessor reportStore)
+		public ReportController(IReportStore reportStore)
 		{
 			reports = reportStore;
 		}
@@ -24,7 +24,8 @@ namespace Reports.Controllers
 				return NotFound();
 			}
 
-			var r = reports[id];
+			//TODO: Cache this?
+			var r = reports.Get(id);
 			var sortableFields = new Dictionary<string, string>();
 
 			foreach (var field in r.Fields[0])

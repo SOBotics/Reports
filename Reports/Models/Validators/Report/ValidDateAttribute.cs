@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Reports.Models.Validators.Report
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-	internal class ValidDateAttribute : ValidationAttribute
+	public class ValidDateAttribute : ValidationAttribute
 	{
 		private string errorMessage = "";
 

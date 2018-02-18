@@ -3,19 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Reports.Config;
 using Reports.Models;
-using Reports.Services.Reports.Accessor;
-using Reports.Services.Reports.IdGenerator;
+using Reports.Services.LocalData.Reports;
+using Reports.Services.Reports;
 
 namespace Reports.Controllers.API.V2
 {
 	[Route("api/v2/[controller]/[action]")]
 	public class ReportController : Controller
 	{
-		private readonly IReportAccessor reportStore;
+		private readonly IReportStore reportStore;
 		private readonly IIdGenerator idGenerator;
 		private readonly IOptionsSnapshot<HostingOptions> configAccessor;
 
-		public ReportController(IOptionsSnapshot<HostingOptions> ca, IReportAccessor rs, IIdGenerator idGen)
+		public ReportController(IOptionsSnapshot<HostingOptions> ca, IReportStore rs, IIdGenerator idGen)
 		{
 			configAccessor = ca;
 			reportStore = rs;
@@ -38,6 +38,7 @@ namespace Reports.Controllers.API.V2
 			report.ID = idGenerator.GetNewId();
 			report.AppName = report.AppName.Trim();
 			report.AppURL = report.AppURL.Trim();
+			report.CreatedAt = DateTime.UtcNow;
 
 			for (var i = 0; i < report.Fields.Length; i++)
 			for (var j = 0; j < report.Fields[i].Length; j++)
@@ -57,7 +58,7 @@ namespace Reports.Controllers.API.V2
 				}
 			}
 
-			reportStore.AddReport(report);
+			reportStore.Save(report);
 
 			return Json(new
 			{

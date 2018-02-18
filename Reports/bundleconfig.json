@@ -6,10 +6,10 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/bundle-1.0.0.css",
+    "outputFileName": "wwwroot/css/bundle-1.1.0.css",
     "inputFiles": [
-      "wwwroot/css/main.css",
-      "wwwroot/css/fonts/fonts.css"
+      "wwwroot/css/fonts/fonts.css",
+      "wwwroot/css/main.css"
     ]
   }
 ]

@@ -1,5 +1,43 @@
-﻿@{ 
+﻿@model Dictionary<string, Reports.Models.AppStats>
+@{
 	ViewData["Title"] = "Stats";
+	var numStyle = "{0:#,##0.##}";
 }
 
-<p>Well, I'd show you some stats, but we don't have anything at the moment :(</p>
+@if (Model?.Count > 0)
+{
+	<table>
+		<thead>
+			<tr>
+				<td><span>App Name</span></td>
+				<td><span title="The sum of non-unique views generated from all live reports">Total Views</span></td>
+				<td><span title="The average non-unique view count per live review">Views/Report</span></td>
+				<td><span title="The total number of reports that have not yet expired">Live Reports</span></td>
+				<td><span title="The average number of reports generated per day">Reports/Day</span></td>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var s in Model.Values)
+			{
+				<tr>
+					@if (s.AppURL != null)
+					{
+						<td><a href="@s.AppURL">@s.Name</a></td>
+					}
+					else
+					{
+						<td>@s.Name</td>
+					}
+					<td>@string.Format(numStyle, s.TotalViews)</td>
+					<td>@string.Format(numStyle, s.ViewsPerReport)</td>
+					<td>@string.Format(numStyle, s.LiveReports)</td>
+					<td>@string.Format(numStyle, s.ReportsPerDay)</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>Well, I'd show you some stats, but we don't have anything at the moment :(</p>
+}

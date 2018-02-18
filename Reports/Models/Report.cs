@@ -51,10 +51,16 @@ namespace Reports.Models
 		public virtual string AppURL { get; set; }
 
 		[Index(3)]
+		public virtual int Views { get; set; }
+
+		[Index(4)]
+		public virtual DateTime CreatedAt { get; set; }
+
+		[Index(5)]
 		[ValidDate]
 		public virtual DateTime ExpiresAt { get; set; }
 
-		[Index(4)]
+		[Index(6)]
 		[Required]
 		[UniqueID]
 		public virtual Field[][] Fields { get; set; }
