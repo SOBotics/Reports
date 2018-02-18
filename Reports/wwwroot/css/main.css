@@ -44,13 +44,17 @@ select {
 	color: #0022CC;
 }
 
-.bodyLight a:visited {
-	color: #7DB3F1;
-}
-
 .bodyLight select {
 	color: #1A1A1A;
 	background-color: #F8F8F8;
+}
+
+.bodyLight thead {
+	border-color: black;
+}
+
+.bodyLight a:visited {
+	color: #7DB3F1;
 }
 
 .bodyLight #openAllReports {
@@ -63,7 +67,12 @@ select {
 
 .bodyDark {
 	color: #F8F8F8;
+	border-color: white;
 	background-color: #1A1A1A;
+}
+
+.bodyDark thead {
+	border-color: white;
 }
 
 .bodyDark h1 {
@@ -177,13 +186,15 @@ header button {
 table {
 	width: 100%;
 	text-align: center;
+	border-collapse: collapse;
 }
 
 thead {
-	font-family: QuickSandBold;
+	border-style: solid;
+	border-width: 0 0 1px 0;
 }
 
-thead tr td {
+thead tr th {
 	padding-bottom: 10px;
 }
 
