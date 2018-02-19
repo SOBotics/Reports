@@ -37,7 +37,7 @@ namespace Reports.Controllers.API.V2
 
 			report.ID = idGenerator.GetNewId();
 			report.AppName = report.AppName.Trim();
-			report.AppURL = report.AppURL.Trim();
+			report.AppURL = report.AppURL?.Trim();
 			report.CreatedAt = DateTime.UtcNow;
 
 			for (var i = 0; i < report.Fields.Length; i++)
