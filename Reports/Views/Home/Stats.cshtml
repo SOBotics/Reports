@@ -1,11 +1,59 @@
-﻿@model Dictionary<string, Reports.Models.AppStats>
+﻿@using Reports.Models;
 @{
-	ViewData["Title"] = "Stats";
+	ViewData["title"] = "Stats";
 	var numStyle = "{0:#,##0.##}";
+	var appStats = (Dictionary<string, AppStats>)ViewData["appStats"];
+	var serverStats = (ServerStats)ViewData["serverStats"];
+	//TODO: Refactor this crap.
+	var reqCount = string.Format(numStyle, serverStats.TotalReqs);
+	var totalMiB = string.Format(numStyle, Math.Round(serverStats.TotalDataProcessed / 1024.0));
+	var apiMiB = Math.Round(serverStats.ApiBytesProcessed / 1024.0);
+	var staticMiB = Math.Round(serverStats.StaticBytesProcessed / 1024.0);
+	var dynamicMiB = Math.Round(serverStats.DynamicBytesProcessed / 1024.0);
+	var avgResTime = Math.Round(serverStats.AvgerageResponseTimeMS);
 }
 
-@if (Model?.Count > 0)
+@if (serverStats.TotalReqs > 0)
 {
+	<h2>Server Stats</h2>
+	<p>During the previous 7 days, the server has processed <strong>@reqCount</strong> requests.</p>
+	<p>Totalling <strong>@totalMiB</strong>MiB of data, with an average response time of <strong>@avgResTime</strong>ms.</p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Content Type</th>
+				<th>Requests</th>
+				<th>Median Response Time (ms)</th>
+				<th>Total MiB Transferred</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>API</td>
+				<td>@string.Format(numStyle, serverStats.ApiReqCount)</td>
+				<td>@Math.Round(serverStats.MedianApiTime)</td>
+				<td>@string.Format(numStyle, apiMiB)</td>
+			</tr>
+			<tr>
+				<td>Static Files</td>
+				<td>@string.Format(numStyle, serverStats.StaticReqCount)</td>
+				<td>@Math.Round(serverStats.MedianStaticTime)</td>
+				<td>@string.Format(numStyle, staticMiB)</td>
+			</tr>
+			<tr>
+				<td>Dynamic Views</td>
+				<td>@string.Format(numStyle, serverStats.DynamicReqCount)</td>
+				<td>@Math.Round(serverStats.MedianDynamicTime)</td>
+				<td>@string.Format(numStyle, dynamicMiB)</td>
+			</tr>
+		</tbody>
+	</table>
+}
+
+@if (appStats.Count > 0)
+{
+	<h2>App Stats</h2>
 	<table>
 		<thead>
 			<tr>
@@ -17,7 +65,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var s in Model.Values)
+			@foreach (var s in appStats.Values)
 			{
 				<tr>
 					@if (s.AppURL != null)

@@ -60,12 +60,19 @@ namespace Reports.Controllers.API.V2
 
 			reportStore.Save(report);
 
+			var protocol = "http";
+
+			if (configAccessor.Value.TlsSupported)
+			{
+				protocol += "s";
+			}
+
 			return Json(new
 			{
 #if RELEASE
-				ReportURL = $"http://{configAccessor.Value.FQD}/r/{report.ID}"
+				ReportURL = $"{protocol}://{configAccessor.Value.FQD}/r/{report.ID}"
 #else
-				ReportURL = $"http://{Request.Host}/r/{report.ID}"
+				ReportURL = $"{protocol}://{Request.Host}/r/{report.ID}"
 #endif
 			});
 		}

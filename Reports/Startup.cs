@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Reports.Config;
 using Reports.Middleware;
+using Reports.Services.LocalData.MetaStats;
 using Reports.Services.LocalData.Reports;
 using Reports.Services.Reports;
 
@@ -28,6 +29,7 @@ namespace Reports
 			services.AddResponseCompression();
 
 			services.AddSingleton<IReportStore, ReportStore>();
+			services.AddSingleton<IMetaStatStore, MetaStatStore>();
 			services.AddSingleton<ReportDeleter>();
 
 			services.AddTransient<IIdGenerator, IdGenerator>();
@@ -38,6 +40,7 @@ namespace Reports
 			// Make sure service is initialised.
 			app.ApplicationServices.GetService<ReportDeleter>();
 
+			app.UseResponseMetaStatsLogger();
 			app.UseResponseCompression();
 			app.UseStaticFiles();
 			app.UseReportViewCounter();

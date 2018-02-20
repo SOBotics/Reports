@@ -127,7 +127,11 @@ header button {
 	margin: 0 auto;
 }
 
-#main p {
+#main h2 {
+	font-size: 2.5em;
+}
+
+#main h2, p {
 	text-align: center;
 }
 
@@ -187,6 +191,7 @@ table {
 	width: 100%;
 	text-align: center;
 	border-collapse: collapse;
+	margin: 2.5em 0 5em 0;
 }
 
 thead {

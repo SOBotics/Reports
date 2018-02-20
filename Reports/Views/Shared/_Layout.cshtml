@@ -1,5 +1,5 @@
 ﻿@{
-	var sha = ViewData["Sha"].ToString();
+	var sha = ViewData["sha"].ToString();
 	var commitUrl = $"https://github.com/SOBotics/Reports/commit/{sha}";
 	var serverVersion = sha.ToString().Substring(0, 5);
 }
@@ -8,14 +8,14 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<link rel="stylesheet" type="text/css" href="/css/bundle-1.2.0.min.css" />
+		<link rel="stylesheet" type="text/css" href="/css/bundle-1.3.0.min.css" />
 		<script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
 		<script type="text/javascript" src="/js/main-1.0.0.min.js"></script>
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 		<meta name="theme-color" content="#1A1A1A">
-		<title>SOBotics Reports - @ViewData["Title"]</title>
+		<title>SOBotics Reports - @ViewData["title"]</title>
 	</head>
 	<body>
 		<div id="container">
@@ -29,18 +29,18 @@
 			</div>
 			<footer>
 				<div id="footerContainer">
-					@if (ViewData["AppName"] != null)
+					@if (ViewData["appName"] != null)
 					{
 						<span class="reportOwner">
 							Data provided by <span style="font-family:QuickSandBold">
 								@{
-									if (ViewData["AppURL"] == null)
+									if (ViewData["appURL"] == null)
 									{
-										@ViewData["AppName"]
+										@ViewData["appName"]
 									}
 									else
 									{
-										<a href="@ViewData["AppURL"]">@ViewData["AppName"]</a>
+										<a href="@ViewData["appURL"]">@ViewData["appName"]</a>
 									}
 								}
 							</span>

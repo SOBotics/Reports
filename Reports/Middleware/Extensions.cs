@@ -8,5 +8,10 @@ namespace Reports.Middleware
 		{
 			return builder.UseMiddleware<ReportViewCounter>();
 		}
+
+		public static IApplicationBuilder UseResponseMetaStatsLogger(this IApplicationBuilder builder)
+		{
+			return builder.UseMiddleware<ResponseMetaStatsLogger>();
+		}
 	}
 }

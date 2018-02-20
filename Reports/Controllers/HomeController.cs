@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Reports.Models;
+using Reports.Services.LocalData.MetaStats;
 using Reports.Services.LocalData.Reports;
 
 namespace Reports.Controllers
@@ -11,12 +12,14 @@ namespace Reports.Controllers
 	public class HomeController : Controller
 	{
 		private readonly IReportStore reportStore;
+		private readonly IMetaStatStore metaStatStore;
 
 
 
-		public HomeController(IReportStore rs)
+		public HomeController(IReportStore rs, IMetaStatStore mss)
 		{
 			reportStore = rs;
+			metaStatStore = mss;
 		}
 
 
@@ -25,14 +28,62 @@ namespace Reports.Controllers
 		[Route("/home")]
 		public IActionResult Index()
 		{
-			ViewData["Sha"] = ThisAssembly.Git.Sha;
+			ViewData["sha"] = ThisAssembly.Git.Sha;
 
 			return View();
 		}
 
 		public IActionResult Stats()
 		{
-			var stats = new Dictionary<string, AppStats>();
+			ViewData["appStats"] = GetAppStats();
+			ViewData["serverStats"] = GetServerStats();
+			ViewData["sha"] = ThisAssembly.Git.Sha;
+
+			return View();
+		}
+
+		private ServerStats GetServerStats()
+		{
+			//TODO: Refactor this crap.
+			var apiStats = metaStatStore.GetData<HashSet<RequestResponseStat>>(MetaStatStore.ApiTimesKey);
+			var staticStats = metaStatStore.GetData<HashSet<RequestResponseStat>>(MetaStatStore.StaticTimesKey);
+			var dynamicStats = metaStatStore.GetData<HashSet<RequestResponseStat>>(MetaStatStore.DynamicTimesKey);
+
+			return new ServerStats
+			{
+				ApiReqCount = apiStats.Count,
+				StaticReqCount = staticStats.Count,
+				DynamicReqCount = dynamicStats.Count,
+				MedianApiTime = GetMedianTime(apiStats),
+				MedianStaticTime = GetMedianTime(staticStats),
+				MedianDynamicTime = GetMedianTime(dynamicStats),
+				ApiBytesProcessed = apiStats.Sum(x => x.Size),
+				StaticBytesProcessed = staticStats.Sum(x => x.Size),
+				DynamicBytesProcessed = dynamicStats.Sum(x => x.Size)
+			};
+		}
+
+		private double GetMedianTime(HashSet<RequestResponseStat> stats)
+		{
+			if (stats.Count % 2 == 1)
+			{
+				return stats.OrderByDescending(x => x.Time).ElementAt(stats.Count / 2).Time;
+			}
+			else
+			{
+				var sorted = stats.OrderByDescending(x => x.Time);
+				var len = stats.Count;
+
+				var a = sorted.ElementAt((len / 2) - 1).Time;
+				var b = sorted.ElementAt(len / 2).Time;
+
+				return a + b / 2.0;
+			}
+		}
+
+		private Dictionary<string, AppStats> GetAppStats()
+		{
+			var appStats = new Dictionary<string, AppStats>();
 			var reports = new Dictionary<string, List<DateTime>>();
 
 			// Calculate total views and total reports
@@ -47,35 +98,33 @@ namespace Reports.Controllers
 
 				reports[r.AppName].Add(r.CreatedAt.Date);
 
-				if (!stats.ContainsKey(r.AppName))
+				if (!appStats.ContainsKey(r.AppName))
 				{
-					stats[r.AppName] = new AppStats
+					appStats[r.AppName] = new AppStats
 					{
 						Name = r.AppName,
 						AppURL = r.AppURL
 					};
 				}
 
-				stats[r.AppName].LiveReports++;
-				stats[r.AppName].TotalViews += r.Views;
+				appStats[r.AppName].LiveReports++;
+				appStats[r.AppName].TotalViews += r.Views;
 			}
 
 			// Calculate views/report and reports/day
-			foreach (var app in stats.Keys)
+			foreach (var app in appStats.Keys)
 			{
-				if (stats[app].TotalViews > 0)
+				if (appStats[app].TotalViews > 0)
 				{
-					var vpr = stats[app].TotalViews * 1.0 / stats[app].LiveReports;
+					var vpr = appStats[app].TotalViews * 1.0 / appStats[app].LiveReports;
 
-					stats[app].ViewsPerReport = Math.Round(vpr, 1);
+					appStats[app].ViewsPerReport = Math.Round(vpr, 1);
 				}
 				var days = reports[app].GroupBy(x => x);
-				stats[app].ReportsPerDay = days.Average(x => x.Count());
+				appStats[app].ReportsPerDay = days.Average(x => x.Count());
 			}
 
-			ViewData["Sha"] = ThisAssembly.Git.Sha;
-
-			return View(stats);
+			return appStats;
 		}
 	}
 }

@@ -45,6 +45,11 @@ namespace Reports.Services.LocalData
 
 		public T GetData<T>(string id)
 		{
+			if (!lck.ContainsKey(id))
+			{
+				return default(T);
+			}
+
 			var path = GetPath(id);
 
 			byte[] compressedBytes;
@@ -82,8 +87,11 @@ namespace Reports.Services.LocalData
 			}
 			else
 			{
-				File.WriteAllBytes(path, compressedBytes);
-				lck[id] = new object();
+				lock (lck)
+				{
+					lck[id] = new object();
+					File.WriteAllBytes(path, compressedBytes);
+				}
 			}
 		}
 

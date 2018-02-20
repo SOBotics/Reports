@@ -1,8 +1,10 @@
 ﻿{
 	"Hosting": {
+		"TlsSupported": false,
 		"FQD": "reports.sobotics.org"
 	},
 	"DataStore": {
-		"Reports": ".\\reports"
+		"Reports": ".\\reports",
+		"MetaStats": ".\\meta-stats"
 	}
 }

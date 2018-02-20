@@ -1,8 +1,8 @@
 ﻿@model Reports.Models.Report
 @{
-	ViewData["Title"] = Model.ID;
-	ViewData["AppName"] = Model.AppName;
-	ViewData["AppURL"] = Model.AppURL;
+	ViewData["title"] = Model.ID;
+	ViewData["appName"] = Model.AppName;
+	ViewData["appURL"] = Model.AppURL;
 }
 
 @if (Model.Fields.Length > 1)
@@ -13,7 +13,7 @@
 			<span id="openAllReports">Open all</span>
 		}
 		@{ 
-			var sortableFields = ViewData["SortableFields"] as Dictionary<string, string>;
+			var sortableFields = ViewData["sortableFields"] as Dictionary<string, string>;
 			if (sortableFields?.Count > 0)
 			{
 				<span>

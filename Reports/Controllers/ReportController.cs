@@ -45,8 +45,8 @@ namespace Reports.Controllers
 				}
 			}
 
-			ViewData["Sha"] = ThisAssembly.Git.Sha;
-			ViewData["SortableFields"] = sortableFields;
+			ViewData["sha"] = ThisAssembly.Git.Sha;
+			ViewData["sortableFields"] = sortableFields;
 
 			return View(r);
 		}

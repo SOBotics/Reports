@@ -6,7 +6,7 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/bundle-1.2.0.css",
+    "outputFileName": "wwwroot/css/bundle-1.3.0.css",
     "inputFiles": [
       "wwwroot/css/main.css",
       "wwwroot/css/fonts/fonts.css"
