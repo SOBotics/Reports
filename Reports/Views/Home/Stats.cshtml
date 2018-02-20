@@ -1,23 +1,20 @@
-﻿@using Reports.Models;
+﻿@using Reports;
+@using Reports.Models;
 @{
 	ViewData["title"] = "Stats";
-	var numStyle = "{0:#,##0.##}";
 	var appStats = (Dictionary<string, AppStats>)ViewData["appStats"];
-	var serverStats = (ServerStats)ViewData["serverStats"];
-	//TODO: Refactor this crap.
-	var reqCount = string.Format(numStyle, serverStats.TotalReqs);
-	var totalMiB = string.Format(numStyle, Math.Round(serverStats.TotalDataProcessed / 1024.0));
-	var apiMiB = Math.Round(serverStats.ApiBytesProcessed / 1024.0);
-	var staticMiB = Math.Round(serverStats.StaticBytesProcessed / 1024.0);
-	var dynamicMiB = Math.Round(serverStats.DynamicBytesProcessed / 1024.0);
-	var avgResTime = Math.Round(serverStats.AvgerageResponseTimeMS);
+	var serverStats = (Dictionary<string, ResponseTypeStats>)ViewData["serverStats"];
 }
 
 <h2>Server Stats</h2>
-@if (serverStats.TotalReqs > 0)
+@if (serverStats.Values.Sum(x => x.Requests) > 0)
 {
+	var reqCount = serverStats.Values.Sum(x => x.Requests).Prettify();
+	var bytes = serverStats.Values.Sum(x => x.BytesTransferred).ToReadableByteCount();
+	var avgResTime = Math.Round(serverStats.Values.Average(x => x.MedianResponseTime));
+
 	<p>Over the last 7 days, the server has processed <strong>@reqCount</strong> requests.</p>
-	<p>Totalling <strong>@totalMiB</strong>MiB of data, with an average response time of <strong>@avgResTime</strong>ms.</p>
+	<p>Totalling <strong>@bytes.Substring(0, bytes.Length - 3)</strong>@bytes.Substring(bytes.Length - 3) of data, with an average response time of <strong>@avgResTime</strong>ms.</p>
 
 	<table>
 		<thead>
@@ -25,28 +22,19 @@
 				<th>Content Type</th>
 				<th>Requests</th>
 				<th>Median Response Time (ms)</th>
-				<th>Total MiB Transferred</th>
+				<th>Total Data Transferred</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td>API</td>
-				<td>@string.Format(numStyle, serverStats.ApiReqCount)</td>
-				<td>@Math.Round(serverStats.MedianApiTime)</td>
-				<td>@string.Format(numStyle, apiMiB)</td>
-			</tr>
-			<tr>
-				<td>Static Files</td>
-				<td>@string.Format(numStyle, serverStats.StaticReqCount)</td>
-				<td>@Math.Round(serverStats.MedianStaticTime)</td>
-				<td>@string.Format(numStyle, staticMiB)</td>
-			</tr>
-			<tr>
-				<td>Dynamic Views</td>
-				<td>@string.Format(numStyle, serverStats.DynamicReqCount)</td>
-				<td>@Math.Round(serverStats.MedianDynamicTime)</td>
-				<td>@string.Format(numStyle, dynamicMiB)</td>
-			</tr>
+			@foreach (var type in serverStats.Keys)
+			{
+				<tr>
+					<td>@type</td>
+					<td>@serverStats[type].Requests.Prettify()</td>
+					<td>@serverStats[type].ResponseTimePretty</td>
+					<td>@serverStats[type].BytesTransferred.ToReadableByteCount()</td>
+				</tr>
+			}
 		</tbody>
 	</table>
 }
@@ -80,10 +68,10 @@ else
 					{
 						<td>@s.Name</td>
 					}
-					<td>@string.Format(numStyle, s.TotalViews)</td>
-					<td>@string.Format(numStyle, s.ViewsPerReport)</td>
-					<td>@string.Format(numStyle, s.LiveReports)</td>
-					<td>@string.Format(numStyle, s.ReportsPerDay)</td>
+					<td>@s.TotalViews.Prettify()</td>
+					<td>@s.ViewsPerReport.Prettify()</td>
+					<td>@s.LiveReports.Prettify()</td>
+					<td>@s.ReportsPerDay.Prettify()</td>
 				</tr>
 			}
 		</tbody>

@@ -42,30 +42,36 @@ namespace Reports.Controllers
 			return View();
 		}
 
-		private ServerStats GetServerStats()
+		private Dictionary<string, ResponseTypeStats> GetServerStats()
 		{
-			//TODO: Refactor this crap.
-			var apiStats = metaStatStore.GetData<HashSet<RequestResponseStat>>(MetaStatStore.ApiTimesKey);
-			var staticStats = metaStatStore.GetData<HashSet<RequestResponseStat>>(MetaStatStore.StaticTimesKey);
-			var dynamicStats = metaStatStore.GetData<HashSet<RequestResponseStat>>(MetaStatStore.DynamicTimesKey);
-
-			return new ServerStats
+			var data = metaStatStore.GetData<Dictionary<string, HashSet<RequestResponseStat>>>("responseStats");
+			var stats = new Dictionary<string, ResponseTypeStats>();
+			var responseTypes = new[]
 			{
-				ApiReqCount = apiStats?.Count ?? 0,
-				StaticReqCount = staticStats?.Count ?? 0,
-				DynamicReqCount = dynamicStats?.Count ?? 0,
-				MedianApiTime = GetMedianTime(apiStats),
-				MedianStaticTime = GetMedianTime(staticStats),
-				MedianDynamicTime = GetMedianTime(dynamicStats),
-				ApiBytesProcessed = apiStats?.Sum(x => x.Size) ?? 0,
-				StaticBytesProcessed = staticStats?.Sum(x => x.Size) ?? 0,
-				DynamicBytesProcessed = dynamicStats?.Sum(x => x.Size) ?? 0
+				MetaStatStore.ApiStatsKey,
+				MetaStatStore.StaticFileStatsKey,
+				MetaStatStore.DynamicViewStatsKey
 			};
+
+			foreach (var type in responseTypes)
+			{
+				if (data?.ContainsKey(type) ?? false)
+				{
+					stats[type] = new ResponseTypeStats
+					{
+						Requests = data[type].Count,
+						BytesTransferred = data[type].Sum(x => x.Size),
+						MedianResponseTime = GetMedianTime(data[type])
+					};
+				}
+			}
+
+			return stats;
 		}
 
 		private double GetMedianTime(HashSet<RequestResponseStat> stats)
 		{
-			if (stats == null)
+			if (stats?.Count == 0)
 			{
 				return 0;
 			}

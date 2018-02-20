@@ -11,6 +11,7 @@ namespace Reports.Middleware
 {
 	public class ResponseMetaStatsLogger
 	{
+		private const string storeKey = "responseStats";
 		private readonly RequestDelegate nextMiddleware;
 
 		public ResponseMetaStatsLogger(RequestDelegate next)
@@ -45,11 +46,11 @@ namespace Reports.Middleware
 				}
 			}
 
-			var storeKey = "";
+			var responseType = "";
 
 			if (context.Request.Method == "POST")
 			{
-				storeKey = MetaStatStore.ApiTimesKey;
+				responseType = MetaStatStore.ApiStatsKey;
 			}
 			else
 			{
@@ -57,11 +58,11 @@ namespace Reports.Middleware
 
 				if (!string.IsNullOrWhiteSpace(resourceExt))
 				{
-					storeKey = MetaStatStore.StaticTimesKey;
+					responseType = MetaStatStore.StaticFileStatsKey;
 				}
 				else
 				{
-					storeKey = MetaStatStore.DynamicTimesKey;
+					responseType = MetaStatStore.DynamicViewStatsKey;
 				}
 			}
 
@@ -69,19 +70,24 @@ namespace Reports.Middleware
 			size += context.Request.Headers.Sum(x => x.Key.Length + x.Value.Sum(z => z.Length));
 			size += context.Response.Headers.Sum(x => x.Key.Length + x.Value.Sum(z => z.Length));
 
-			UpdateStore(store, storeKey, sw.ElapsedMilliseconds, size);
+			UpdateStore(store, responseType, sw.ElapsedMilliseconds, size);
 		}
 
 
-		private void UpdateStore(IMetaStatStore store, string storeKey, long time, long size)
+		private void UpdateStore(IMetaStatStore store, string responseType, long time, long size)
 		{
 			var stats = store
-				.GetData<HashSet<RequestResponseStat>>(storeKey)
-				?? new HashSet<RequestResponseStat>();
+				.GetData<Dictionary<string, HashSet<RequestResponseStat>>>(storeKey)
+				?? new Dictionary<string, HashSet<RequestResponseStat>>
+				{
+					[MetaStatStore.ApiStatsKey] = new HashSet<RequestResponseStat>(),
+					[MetaStatStore.StaticFileStatsKey] = new HashSet<RequestResponseStat>(),
+					[MetaStatStore.DynamicViewStatsKey] = new HashSet<RequestResponseStat>()
+				};
 
 			var toDelete = new HashSet<DateTime>();
 
-			foreach (var entry in stats)
+			foreach (var entry in stats[responseType])
 			{
 				if (entry.ExecutedAt.AddDays(7) < DateTime.UtcNow)
 				{
@@ -89,9 +95,9 @@ namespace Reports.Middleware
 				}
 			}
 
-			stats.RemoveWhere(x => toDelete.Contains(x.ExecutedAt));
+			stats[responseType].RemoveWhere(x => toDelete.Contains(x.ExecutedAt));
 
-			stats.Add(new RequestResponseStat
+			stats[responseType].Add(new RequestResponseStat
 			{
 				ExecutedAt = DateTime.UtcNow,
 				Size = size,
