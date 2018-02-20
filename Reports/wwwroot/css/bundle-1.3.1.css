@@ -13,11 +13,11 @@ h1, h2, h3 {
 }
 
 a:visited {
-	color: #3464B7;
+	color: #5DABFF;
 }
 
 a {
-	color: #5DABFF;
+	color: #60DAFD;
 	text-decoration: none;
 }
 
@@ -41,7 +41,11 @@ select {
 }
 
 .bodyLight a {
-	color: #0022CC;
+	color: #005AC7;
+}
+
+.bodyLight a:visited {
+	color: #780AFF;
 }
 
 .bodyLight select {
@@ -51,10 +55,6 @@ select {
 
 .bodyLight thead {
 	border-color: black;
-}
-
-.bodyLight a:visited {
-	color: #7DB3F1;
 }
 
 .bodyLight #openAllReports {
