@@ -13,9 +13,9 @@
 	var avgResTime = Math.Round(serverStats.AvgerageResponseTimeMS);
 }
 
+<h2>Server Stats</h2>
 @if (serverStats.TotalReqs > 0)
 {
-	<h2>Server Stats</h2>
 	<p>During the previous 7 days, the server has processed <strong>@reqCount</strong> requests.</p>
 	<p>Totalling <strong>@totalMiB</strong>MiB of data, with an average response time of <strong>@avgResTime</strong>ms.</p>
 
@@ -50,10 +50,14 @@
 		</tbody>
 	</table>
 }
+else
+{
+	<p>Not enough data available yet.</p>
+}
 
+<h2>App Stats</h2>
 @if (appStats.Count > 0)
 {
-	<h2>App Stats</h2>
 	<table>
 		<thead>
 			<tr>
@@ -87,5 +91,5 @@
 }
 else
 {
-	<p>Well, I'd show you some stats, but we don't have anything at the moment :(</p>
+	<p>Not enough data available yet.</p>
 }

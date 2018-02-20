@@ -51,20 +51,25 @@ namespace Reports.Controllers
 
 			return new ServerStats
 			{
-				ApiReqCount = apiStats.Count,
-				StaticReqCount = staticStats.Count,
-				DynamicReqCount = dynamicStats.Count,
+				ApiReqCount = apiStats?.Count ?? 0,
+				StaticReqCount = staticStats?.Count ?? 0,
+				DynamicReqCount = dynamicStats?.Count ?? 0,
 				MedianApiTime = GetMedianTime(apiStats),
 				MedianStaticTime = GetMedianTime(staticStats),
 				MedianDynamicTime = GetMedianTime(dynamicStats),
-				ApiBytesProcessed = apiStats.Sum(x => x.Size),
-				StaticBytesProcessed = staticStats.Sum(x => x.Size),
-				DynamicBytesProcessed = dynamicStats.Sum(x => x.Size)
+				ApiBytesProcessed = apiStats?.Sum(x => x.Size) ?? 0,
+				StaticBytesProcessed = staticStats?.Sum(x => x.Size) ?? 0,
+				DynamicBytesProcessed = dynamicStats?.Sum(x => x.Size) ?? 0
 			};
 		}
 
 		private double GetMedianTime(HashSet<RequestResponseStat> stats)
 		{
+			if (stats == null)
+			{
+				return 0;
+			}
+
 			if (stats.Count % 2 == 1)
 			{
 				return stats.OrderByDescending(x => x.Time).ElementAt(stats.Count / 2).Time;
