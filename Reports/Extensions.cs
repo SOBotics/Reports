@@ -6,13 +6,15 @@ namespace Reports
 	{
 		private const string numStyle = "{0:#,##0.##}";
 
-		public static string Prettify(this int num)
-		{
-			return string.Format(numStyle, num);
-		}
+		public static string Prettify(this int num, int? round = null) => Prettify((double)num, round);
 
-		public static string Prettify(this double num)
+		public static string Prettify(this double num, int? round = null)
 		{
+			if (round != null)
+			{
+				num = Math.Round(num, round.Value);
+			}
+
 			return string.Format(numStyle, num);
 		}
 

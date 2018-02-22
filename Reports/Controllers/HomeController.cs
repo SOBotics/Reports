@@ -129,7 +129,7 @@ namespace Reports.Controllers
 				{
 					var vpr = appStats[app].TotalViews * 1.0 / appStats[app].LiveReports;
 
-					appStats[app].ViewsPerReport = Math.Round(vpr, 1);
+					appStats[app].ViewsPerReport = vpr;
 				}
 				var days = reports[app].GroupBy(x => x);
 				appStats[app].ReportsPerDay = days.Average(x => x.Count());
