@@ -15,7 +15,7 @@ Your request can contain the following data (fields in bold are required):
  - **`appName`** *string*: The name of your app.
  - `appURL` *string*: A url pointing to your app's website.
  - `expiresAt` *string*: The ISO 8601 formatted date and time of when you would like your report to be deleted. If not specified, defaults to 30 days. Maximum value: one year from the current date.
- - **`fields`** `object`: An array of an array of `field` objects.
+ - **`fields`** *object*: An array of an array of `field` objects.
 
 `field` objects can contain the following data:
 
