@@ -22,8 +22,6 @@ namespace Reports.Controllers
 			metaStatStore = mss;
 		}
 
-
-
 		[Route("/")]
 		[Route("/home")]
 		public IActionResult Index()

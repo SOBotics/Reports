@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reports.Models.Validators.Report;
 using ZeroFormatter;
@@ -10,8 +12,37 @@ namespace Reports.Models
 		Default,
 		Link,
 		Date,
-		Answers
+		Answers,
+        Fields
 	}
+
+    public enum SubType
+    {
+        Default,
+        Link,
+        Date,
+        Answers
+    }
+
+    [ZeroFormattable]
+    public class SubField
+    {
+        [Index(0)]
+        [Required(AllowEmptyStrings = false)]
+        [RegularExpression("^[a-zA-Z0-9_\\- ]{1,25}")]
+        public virtual string ID { get; set; }
+
+        [Index(1)]
+        [Required(AllowEmptyStrings = false)]
+        public virtual string Name { get; set; }
+
+        [Index(2)]
+        [Required(AllowEmptyStrings = false)]
+        public virtual string Value { get; set; }
+
+        [Index(3)]
+        public virtual SubType Type { get; set; }
+    }
 
 	[ZeroFormattable]
 	public class Field
@@ -26,11 +57,13 @@ namespace Reports.Models
 		public virtual string Name { get; set; }
 
 		[Index(2)]
-		[Required(AllowEmptyStrings = false)]
 		public virtual string Value { get; set; }
 
 		[Index(3)]
 		public virtual Type Type { get; set; }
+
+        [Index(4)]
+        public virtual SubField[] Fields { get; set; }
 	}
 
 	[ZeroFormattable]
