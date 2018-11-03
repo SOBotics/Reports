@@ -22,6 +22,44 @@ namespace Reports.Controllers.API.V2
 			idGenerator = idGen;
 		}
 
+        private void FormatField(Field f)
+        {
+            f.ID = "FID" + f.ID;
+            f.Name = f.Name.Trim();
+            f.Value = f.Value?.Trim();
+            f.Fields = f.Fields ?? new SubField[0];
+
+            switch (f.Type)
+            {
+                case Models.Type.Date:
+                    {
+                        var dt = DateTime.Parse(f.Value);
+                        var epoch = dt.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+
+                        f.Value = epoch.ToString();
+                    }
+                    break;
+                case Models.Type.Fields:
+                    foreach (var sf in f.Fields)
+                    {
+                        sf.ID = "FID" + sf.ID;
+                        sf.Name = sf.Name.Trim();
+                        sf.Value = sf.Value.Trim();
+
+                        if (sf.Type == SubType.Date)
+                        {
+                            var dt = DateTime.Parse(sf.Value);
+                            var epoch = dt.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+
+                            sf.Value = epoch.ToString();
+                        }
+                    }
+                    break;
+            }
+
+
+        }
+
 		[HttpPost]
 		public IActionResult Create([FromBody]Report report)
 		{
@@ -40,23 +78,13 @@ namespace Reports.Controllers.API.V2
 			report.AppURL = report.AppURL?.Trim();
 			report.CreatedAt = DateTime.UtcNow;
 
-			for (var i = 0; i < report.Fields.Length; i++)
-			for (var j = 0; j < report.Fields[i].Length; j++)
-			{
-				var f = report.Fields[i][j];
-
-				report.Fields[i][j].ID = "FID" + f.ID;
-				report.Fields[i][j].Name = f.Name.Trim();
-				report.Fields[i][j].Value = f.Value.Trim();
-
-				if (f.Type == Models.Type.Date)
-				{
-					var dt = DateTime.Parse(f.Value);
-					var epoch = dt.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
-
-					report.Fields[i][j].Value = epoch.ToString();
-				}
-			}
+		    foreach (var fields in report.Fields)
+		    {
+		        foreach (var field in fields)
+		        {
+		            FormatField(field);
+		        }
+		    }
 
 			reportStore.Save(report);
 

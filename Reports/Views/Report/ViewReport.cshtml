@@ -75,11 +75,77 @@
 									<span class="fieldData">@f.Value</span>
 								</span>
 							</div>
-						}
-						break;
-					}
-				default:
-					{
+}
+                        break;
+                    }
+			    case Reports.Models.Type.Fields:
+			    {
+			        <div class="@f.ID">
+			            <span>
+			                <span class="fieldName">@f.Name</span>: 
+			                @foreach (var sf in f.Fields)
+			                {
+			                    switch (sf.Type)
+			                    {
+			                        case Reports.Models.SubType.Link:
+			                        {
+			                            <div class="@sf.ID reportLink">
+			                                <a title="@sf.Name" target="_blank" href="@sf.Value">
+			                                    @sf.Name
+			                                </a>
+			                            </div>
+			                            break;
+			                        }
+			                        case Reports.Models.SubType.Date:
+			                        {
+			                            <div class="@sf.ID">
+			                                <span>
+			                                    <span class="fieldName">@sf.Name</span>:
+			                                    <span class="timestamp fieldData" data-unixtime="@sf.Value">@sf.Value</span>
+			                                </span>
+			                            </div>
+			                            break;
+			                        }
+			                        case Reports.Models.SubType.Answers:
+			                        {
+			                            if (f.Value.ToUpperInvariant().StartsWith("A"))
+			                            {
+			                                <div class="@sf.ID" style="color: #00AB0B" title="This question has an accepted answer">
+			                                    <span>
+			                                        <span class="fieldName">@sf.Name</span>:
+			                                        <span class="fieldData">@sf.Value.Remove(0, 1)</span>
+			                                    </span>
+			                                </div>
+			                            }
+			                            else
+			                            {
+			                                <div class="@sf.ID" title="This question does not have an accepted answer">
+			                                    <span>
+			                                        <span class="fieldName">@sf.Name</span>:
+			                                        <span class="fieldData">@sf.Value</span>
+			                                    </span>
+			                                </div>
+			                            }
+			                            break;
+			                        }
+			                        default:
+			                        {
+			                            <div class="@sf.ID">
+			                                <span>
+			                                    <span class="fieldName">@sf.Name</span>: 
+			                                    <span class="fieldData">@sf.Value</span>
+			                                </span>
+			                            </div>
+			                            break;
+			                        }
+			                    }
+			                }
+			            </span>
+			        </div>
+			        break;
+			    }
+                default:
+                    {
 						<div class="@f.ID">
 							<span>
 								<span class="fieldName">@f.Name</span>: 
